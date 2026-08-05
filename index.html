@@ -47,10 +47,9 @@
       -webkit-user-drag: none;
       user-select: none;
       -webkit-touch-callout: none;
-      pointer-events: none; /* 클릭/터치 이벤트 무시 */
+      pointer-events: none;
     }
 
-    /* 이미지 위에 투명 막을 씌워 우클릭/길게 누르기 차단 */
     .title-image-cover {
       position: absolute;
       top: 0;
@@ -61,7 +60,7 @@
       background: rgba(0,0,0,0);
     }
 
-    /* ✉️ 문의 안내 문구 (5px & 회색) */
+    /* ✉️ 문의 안내 문구 */
     .contact-info {
       font-size: 5px;
       color: #888888;
@@ -201,7 +200,7 @@
     .result h4 { margin: 0 0 6px 0; font-size: 12px; color: #334155; }
     ul { list-style: none; padding-left: 0; margin-bottom: 0; }
     li { padding: 5px 0; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
-    .actor-tag { color: #0284c7; font-weight: bold; cursor: pointer; text-decoration: underline; }
+    .actor-tag { color: #0284c7; font-weight: bold; cursor: pointer; text-decoration: underline; margin-right: 2px; }
     .delete-btn { background: #ef4444; color: white; border: none; border-radius: 4px; padding: 2px 4px; font-size: 9.5px; cursor: pointer; margin-left: 4px; }
 
     /* 좌석 배치도 */
@@ -319,7 +318,9 @@
       <div class="form-group">
         <label>출연진</label>
         <div class="actor-box">
+          <!-- 💡 1. 처음은 빈칸으로 설정 -->
           <select id="actorSelect">
+            <option value="">선택 안 함</option>
             <option value="김경민">김경민</option>
             <option value="김서연">김서연</option>
             <option value="박슬기">박슬기</option>
@@ -495,6 +496,7 @@
     let tickets = JSON.parse(localStorage.getItem('my_tickets')) || [];
     let pinnedList = JSON.parse(localStorage.getItem('my_pinned')) || [];
     let currentFilter = 'ALL';
+    let selectedScheduleActors = []; // 선택한 회차의 배우 2명 보관용
 
     window.onload = function() {
       renderScheduleTable();
@@ -516,7 +518,6 @@
       }
     }
 
-    // 🎵 요구사항 반영: alert 메시지를 "🎵 넘버: [노래 제목]" 양식으로 변경
     function showSongAlert(songName) {
       alert(`🎵 넘버: [${songName}]`);
     }
@@ -589,6 +590,9 @@
           tr.classList.add('selected-schedule');
 
           document.getElementById('playDate').value = `${item.date} (${item.day}) ${item.time}`;
+          
+          // 💡 2. 선택한 회차의 배우 2명 자동 저장
+          selectedScheduleActors = [item.miller, item.gregorio];
         };
 
         tbody.appendChild(tr);
@@ -670,11 +674,21 @@
       const detail = document.getElementById('seatDetail').value.trim();
       const grade = document.getElementById('seatGrade').value;
       const price = Number(document.getElementById('finalPrice').value);
-      const actor = document.getElementById('actorSelect').value;
+      const manualActor = document.getElementById('actorSelect').value;
 
       if (!detail) {
         alert('좌석을 선택하거나 입력해 주세요!');
         return;
+      }
+
+      // 💡 2. 수동 선택한 배우가 있으면 우선 적용하고, 없으면 회차 클릭 시 선택된 2명 배우 모두 적용
+      let finalActors = [];
+      if (manualActor) {
+        finalActors = [manualActor];
+      } else if (selectedScheduleActors.length > 0) {
+        finalActors = [...selectedScheduleActors];
+      } else {
+        finalActors = [];
       }
 
       const newTicket = {
@@ -683,7 +697,7 @@
         seat: `${grade} ${detail}`,
         seatId: detail,
         price: price,
-        actor: actor
+        actors: finalActors
       };
 
       tickets.push(newTicket);
@@ -695,6 +709,10 @@
 
     function pinCurrentSelectedActor() {
       const selectedActor = document.getElementById('actorSelect').value;
+      if (!selectedActor) {
+        alert('고정할 배우를 먼저 선택해 주세요.');
+        return;
+      }
       togglePin(selectedActor);
     }
 
@@ -736,9 +754,15 @@
         s.classList.remove('selected-seat', 'multi-selected-seat');
       });
 
+      // 배우 목록 기반 필터링
       const filteredTickets = currentFilter === 'ALL' 
         ? tickets 
-        : tickets.filter(t => t.actor.includes(currentFilter));
+        : tickets.filter(t => {
+            if (t.actors && t.actors.length > 0) {
+              return t.actors.includes(currentFilter);
+            }
+            return t.actor ? t.actor.includes(currentFilter) : false;
+          });
 
       const seatCounts = {};
       filteredTickets.forEach(t => {
@@ -775,15 +799,20 @@
 
       filteredTickets.forEach(t => {
         const li = document.createElement('li');
-        const isPinned = pinnedList.includes(t.actor);
-        const pinIcon = isPinned ? '📌' : '📍';
+        
+        // 💡 2. 배열 형태의 배우 2명 표시 로직 처리
+        let actorArr = t.actors || (t.actor ? [t.actor] : []);
+        let actorsHtml = actorArr.map(actName => {
+          const isPinned = pinnedList.includes(actName);
+          const pinIcon = isPinned ? '📌' : '📍';
+          return `<span class="actor-tag" onclick="filterActor('${actName}')">${actName}</span><button class="pin-btn" onclick="togglePin('${actName}')" style="background:none;border:none;cursor:pointer;padding:0 2px;">${pinIcon}</button>`;
+        }).join(' ');
 
         li.innerHTML = `
           <div>
             <small style="color:#64748b;">[${t.date}]</small>
             <strong>[${t.seat}]</strong> 
-            <span class="actor-tag" onclick="filterActor('${t.actor}')">${t.actor}</span>
-            <button class="pin-btn" onclick="togglePin('${t.actor}')" style="background:none;border:none;cursor:pointer;">${pinIcon}</button>
+            ${actorsHtml}
           </div>
           <div>
             <strong>${t.price.toLocaleString()}원</strong>
