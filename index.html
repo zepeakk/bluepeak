@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>뮤지컬 청새치 - 관극 정산</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+      padding: 8px 4px; 
+      max-width: 600px; 
+      margin: 0 auto; 
+      color: #2c3e50; 
+      background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+      min-height: 100vh;
+    }
+    .container { 
+      background: rgba(255, 255, 255, 0.98); 
+      padding: 12px 8px; 
+      border-radius: 16px; 
+      box-shadow: 0 8px 20px rgba(14, 116, 144, 0.15); 
+    }
+
+    .title-image-wrapper {
+      text-align: center;
+      margin-bottom: 12px;
+      border-bottom: 2px solid #0284c7;
+      padding-bottom: 8px;
+    }
+    .title-image-wrapper img {
+      max-width: 280px;
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      filter: drop-shadow(0 3px 5px rgba(2, 132, 199, 0.2));
+    }
+    .contact-info {
+      font-size: 8px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    .schedule-toggle-btn {
+      width: 100%;
+      padding: 10px 12px;
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 13.5px;
+      cursor: pointer;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .schedule-container {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      max-height: 340px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .schedule-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 11px;
+      text-align: center;
+    }
+    
+    .schedule-table th {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #0284c7;
+      color: white;
+      padding: 8px 2px;
+      font-weight: bold;
+      border-bottom: 2px solid #0369a1;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .schedule-table td {
+      padding: 7px 2px;
+      border-bottom: 1px solid #e2e8f0;
+      cursor: pointer;
+    }
+    .schedule-table tr:hover td { background: #bae6fd !important; }
+    .schedule-table tr:nth-child(even) td { background: #f1f5f9; }
+
+    /* 태그 스타일 */
+    .tag-badge {
+      display: inline-block;
+      border-radius: 6px;
+      padding: 1px 4px;
+      font-size: 8.5px;
+      font-weight: bold;
+      margin-left: 2px;
+      color: white;
+      vertical-align: middle;
+    }
+    .tag-cheotgong { background: #0284c7; }
+    .tag-makgong { background: #ef4444; }
+
+    /* 에필로그 태그 */
+    .tag-ep1 { background: #10b981; }
+    .tag-ep2 { background: #f59e0b; }
+    .tag-ep3 { background: #8b5cf6; }
+
+    /* 이벤트 태그 */
+    .event-badge {
+      display: inline-block;
+      padding: 2px 5px;
+      border-radius: 6px;
+      font-size: 9px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    .evt-curtaincall { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+    .evt-double { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .evt-special { background: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
+
+    .selected-schedule td {
+      background: #38bdf8 !important;
+      color: white !important;
+      font-weight: bold;
+    }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group.full-width { grid-column: span 2; }
+    label { font-weight: bold; font-size: 12px; color: #0369a1; }
+    select, input { padding: 7px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; width: 100%; }
+    
+    .actor-box { display: flex; gap: 4px; }
+    .pin-toggle-btn { padding: 6px 8px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 11px; white-space: nowrap; }
+
+    button.submit-btn { 
+      padding: 11px; width: 100%; 
+      background: linear-gradient(90deg, #0284c7, #0369a1); 
+      color: white; border: none; border-radius: 8px; 
+      cursor: pointer; font-weight: bold; font-size: 14px; 
+      margin-top: 5px; box-shadow: 0 3px 8px rgba(2, 132, 199, 0.25);
+    }
+
+    .pinned-section { margin-top: 12px; padding: 8px 10px; background: #f0f9ff; border-radius: 8px; border: 1px solid #e0f2fe; font-size: 12px; }
+    .pin-badge { display: inline-block; background: #0284c7; color: white; padding: 2px 8px; border-radius: 10px; margin-right: 4px; font-size: 11px; margin-top: 2px; }
+
+    .filter-section { margin-top: 12px; margin-bottom: 8px; font-size: 12px; }
+    .filter-btn { padding: 3px 7px; margin-right: 2px; background: #e2e8f0; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; margin-bottom: 3px; }
+    .filter-btn.active { background: #0284c7; color: white; font-weight: bold; }
+
+    .result { margin-top: 12px; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; }
+    .result h3 { margin: 0 0 4px 0; font-size: 15px; color: #0f172a; }
+    .result h4 { margin: 0 0 6px 0; font-size: 13px; color: #334155; }
+    ul { list-style: none; padding-left: 0; margin-bottom: 0; }
+    li { padding: 6px 0; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+    .actor-tag { color: #0284c7; font-weight: bold; cursor: pointer; text-decoration: underline; }
+    .delete-btn { background: #ef4444; color: white; border: none; border-radius: 4px; padding: 2px 5px; font-size: 10px; cursor: pointer; margin-left: 4px; }
+
+    /* 좌석 배치도 스타일 */
+    .seat-map-wrapper {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 2px dashed #cbd5e1;
+    }
+    .seat-map-header { text-align: center; font-weight: bold; font-size: 15px; color: #0369a1; margin-bottom: 10px; }
+    .stage-box { 
+      background: linear-gradient(90deg, #0284c7, #0369a1); 
+      color: #fff; text-align: center; padding: 5px; font-weight: bold; 
+      border-radius: 6px; margin: 0 auto 10px auto; letter-spacing: 4px; font-size: 12px; width: 70%;
+    }
+    
+    .seat-map-container {
+      background: #f0f9ff; border: 1.5px solid #bae6fd; border-radius: 10px; padding: 10px 2px; width: 100%; overflow-x: auto;
+    }
+
+    .seat-section { display: flex; flex-direction: column; gap: 3px; width: max-content; margin: 0 auto; }
+    .aisle-gap { height: 14px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; font-weight: bold; color: #0284c7; font-size: 9.5px; }
+
+    .seat-row { display: flex; justify-content: center; gap: 4px; align-items: center; }
+    .seat-block { display: flex; gap: 1px; }
+    .row-label { font-size: 10.5px; font-weight: bold; width: 12px; text-align: center; color: #0369a1; }
+    
+    .seat { 
+      width: 14.5px; height: 15px; 
+      background: #7dd3fc; border: 0.5px solid #38bdf8; border-radius: 2px; 
+      display: flex; align-items: center; justify-content: center; 
+      font-size: 7.5px; font-weight: bold; cursor: pointer; color: #0f172a;
+      flex-shrink: 0;
+    }
+    
+    .seat.hold-seat { background: #94a3b8; border-color: #64748b; color: white; }
+    .seat.selected-seat { background: #ef4444 !important; color: white !important; border-color: #b91c1c !important; }
+    .seat.multi-selected-seat { background: #f59e0b !important; color: white !important; border-color: #d97706 !important; font-size: 8.5px; }
+
+    .seat-legend { display: flex; justify-content: center; gap: 8px; font-size: 10.5px; margin-bottom: 8px; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 3px; }
+    .legend-box { width: 10px; height: 10px; border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <div class="title-image-wrapper">
+      <img src="title_image.png" alt="뮤지컬 청새치 - 관극 정산">
+      <div class="contact-info">@hillpeakk 로 문의주세요.</div>
+    </div>
+
+    <button class="schedule-toggle-btn" onclick="toggleSchedule()">
+      <span id="scheduleTitleText">📅 회차별 스케줄 (에필로그/이벤트 포함)</span>
+      <span id="scheduleToggleIcon">▲ 접기</span>
+    </button>
+
+    <div class="schedule-container" id="scheduleBox">
+      <table class="schedule-table">
+        <thead>
+          <tr>
+            <th>일시</th>
+            <th>시간</th>
+            <th>밀러 / 루소</th>
+            <th>그레고리오 / 에벌린</th>
+            <th>이벤트 / 에필로그</th>
+          </tr>
+        </thead>
+        <tbody id="scheduleTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group full-width">
+        <label>관람 일시 (스케줄 클릭 시 자동입력)</label>
+        <input type="text" id="playDate" placeholder="예: 7월 23일 (목) 20:00">
+      </div>
+
+      <div class="form-group full-width">
+        <label>선택 좌석</label>
+        <input type="text" id="seatDetail" placeholder="하단 배치도 클릭 (예: C열 12번)">
+      </div>
+
+      <div class="form-group">
+        <label>좌석 등급</label>
+        <select id="seatGrade" onchange="calculatePrice()">
+          <option value="전석" data-price="60000">전석 (60,000원)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>할인 권종</label>
+        <select id="discount" onchange="calculatePrice()">
+          <option value="0.5">프리뷰 할인 / 50%</option>
+          <option value="1.0">일반 (정가)</option>
+          <option value="0.7">조기예매 / 30%</option>
+          <option value="0.9">SNS 팔로우 / 10%</option>
+          <option value="0.85">NEP 할인 / 15%</option>
+          <option value="0.75">재관람 / 25%</option>
+          <option value="0.75">청소년 / 25%</option>
+          <option value="0.6">KIT 카드 40% 할인권</option>
+          <option value="0.5">KIT 카드 50% 할인권</option>
+          <option value="0.5">NEP 2026 50% 할인권</option>
+          <option value="0.5">복지 할인 / 50%</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>최종 결제액</label>
+        <input type="number" id="finalPrice" readonly style="background: #f1f5f9;">
+      </div>
+
+      <div class="form-group">
+        <label>출연진</label>
+        <div class="actor-box">
+          <select id="actorSelect">
+            <option value="김경민">김경민</option>
+            <option value="김서연">김서연</option>
+            <option value="박슬기">박슬기</option>
+            <option value="이봄소리">이봄소리</option>
+            <option value="이지연">이지연</option>
+            <option value="전민지">전민지</option>
+            <option value="홍나현">홍나현</option>
+          </select>
+          <button class="pin-toggle-btn" onclick="pinCurrentSelectedActor()">📌 고정</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="submit-btn" onclick="addTicket()">티켓 기록 추가 & 좌석 색칠 🎨</button>
+
+    <div class="pinned-section">
+      <strong>📌 고정 배우: </strong>
+      <span id="pinnedActors">없음</span>
+    </div>
+
+    <div class="filter-section">
+      <span>필터: </span>
+      <button class="filter-btn active" id="btn-all" onclick="filterActor('ALL')">전체</button>
+      <span id="actorFilterContainer"></span>
+    </div>
+
+    <div class="result">
+      <h3>총 관극 정산: <span id="totalPrice">0</span>원</h3>
+      <h4>관극 목록 (<span id="ticketCount">0</span>회차)</h4>
+      <ul id="ticketList"></ul>
+    </div>
+
+    <!-- 하단 배치도 -->
+    <div class="seat-map-wrapper">
+      <div class="seat-map-header">📍 배치도 (클릭 시 자동선택)</div>
+      <div class="stage-box">STAGE</div>
+      
+      <div class="seat-legend">
+        <div class="legend-item"><div class="legend-box" style="background:#7dd3fc;"></div> 판매석</div>
+        <div class="legend-item"><div class="legend-box" style="background:#94a3b8;"></div> 보류석</div>
+        <div class="legend-item"><div class="legend-box" style="background:#ef4444;"></div> 1회 관람</div>
+        <div class="legend-item"><div class="legend-box" style="background:#f59e0b;"></div> 2회 이상 관람</div>
+      </div>
+
+      <div class="seat-map-container">
+        <div class="seat-section" id="seatMap"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const actorList = ["김경민", "김서연", "박슬기", "이봄소리", "이지연", "전민지", "홍나현"];
+
+    // 에필로그, 이벤트 및 스페셜 커튼콜 넘버리스트 데이터 통합
+    const fullSchedule = [
+      { date: "7/21", day: "화", time: "20:00", miller: "이지연", gregorio: "김경민", millerNote: "첫공", gregorioNote: "첫공", ep: "ep1" },
+      { date: "7/22", day: "수", time: "20:00", miller: "김서연", gregorio: "이봄소리", millerNote: "첫공", gregorioNote: "첫공", ep: "ep1" },
+      { date: "7/23", day: "목", time: "20:00", miller: "홍나현", gregorio: "박슬기", millerNote: "첫공", gregorioNote: "첫공", ep: "ep1" },
+      { date: "7/24", day: "금", time: "20:00", miller: "전민지", gregorio: "김경민", millerNote: "첫공", ep: "ep1" },
+      { date: "7/25", day: "토", time: "15:00", miller: "이지연", gregorio: "박슬기", ep: "ep1" },
+      { date: "7/25", day: "토", time: "19:00", miller: "전민지", gregorio: "박슬기", ep: "ep1" },
+      { date: "7/26", day: "일", time: "14:00", miller: "김서연", gregorio: "김경민", ep: "ep1" },
+      { date: "7/26", day: "일", time: "18:00", miller: "홍나현", gregorio: "김경민", ep: "ep1" },
+      
+      // 7/28~8/2 : 커튼콜 이벤트 + ep2
+      { date: "7/28", day: "화", time: "20:00", miller: "홍나현", gregorio: "박슬기", ep: "ep2", evt: "curtaincall" },
+      { date: "7/29", day: "수", time: "16:00", miller: "김서연", gregorio: "이봄소리", ep: "ep2", evt: "curtaincall" },
+      { date: "7/29", day: "수", time: "20:00", miller: "김서연", gregorio: "박슬기", ep: "ep2", evt: "curtaincall" },
+      { date: "7/30", day: "목", time: "20:00", miller: "이지연", gregorio: "김경민", ep: "ep2", evt: "curtaincall" },
+      { date: "7/31", day: "금", time: "20:00", miller: "전민지", gregorio: "이봄소리", ep: "ep2", evt: "curtaincall" },
+      { date: "8/1", day: "토", time: "15:00", miller: "홍나현", gregorio: "김경민", ep: "ep2", evt: "curtaincall" },
+      { date: "8/1", day: "토", time: "19:00", miller: "이지연", gregorio: "박슬기", ep: "ep2", evt: "curtaincall" },
+      { date: "8/2", day: "일", time: "14:00", miller: "김서연", gregorio: "이봄소리", ep: "ep2", evt: "curtaincall" },
+      { date: "8/2", day: "일", time: "18:00", miller: "전민지", gregorio: "김경민", ep: "ep2", evt: "curtaincall" },
+
+      // 8/4~8/9 : 더블 적립 이벤트 + ep1 (8/9 18:00은 ep2)
+      { date: "8/4", day: "화", time: "20:00", miller: "전민지", gregorio: "박슬기", ep: "ep1", evt: "double" },
+      { date: "8/5", day: "수", time: "16:00", miller: "김서연", gregorio: "김경민", ep: "ep1", evt: "double" },
+      { date: "8/5", day: "수", time: "20:00", miller: "김서연", gregorio: "박슬기", ep: "ep1", evt: "double" },
+      { date: "8/6", day: "목", time: "20:00", miller: "이지연", gregorio: "이봄소리", ep: "ep1", evt: "double" },
+      { date: "8/7", day: "금", time: "20:00", miller: "홍나현", gregorio: "김경민", ep: "ep1", evt: "double" },
+      { date: "8/8", day: "토", time: "15:00", miller: "전민지", gregorio: "이봄소리", ep: "ep1", evt: "double" },
+      { date: "8/8", day: "토", time: "19:00", miller: "이지연", gregorio: "박슬기", ep: "ep1", evt: "double" },
+      { date: "8/9", day: "일", time: "14:00", miller: "홍나현", gregorio: "이봄소리", ep: "ep1", evt: "double" },
+      { date: "8/9", day: "일", time: "18:00", miller: "김서연", gregorio: "김경민", ep: "ep2", evt: "double" },
+
+      // 8/11~8/16 : 스페셜 커튼콜 이벤트 + 넘버리스트
+      { date: "8/11", day: "화", time: "20:00", miller: "홍나현", gregorio: "박슬기", evt: "special", song: "네가 뭔데" },
+      { date: "8/12", day: "수", time: "16:00", miller: "이지연", gregorio: "김경민", evt: "special", song: "네가 뭔데" },
+      { date: "8/12", day: "수", time: "20:00", miller: "김서연", gregorio: "이봄소리", evt: "special", song: "파도가 부른 사람" },
+      { date: "8/13", day: "목", time: "20:00", miller: "전민지", gregorio: "김경민", evt: "special", song: "재회" },
+      { date: "8/14", day: "금", time: "20:00", miller: "홍나현", gregorio: "이봄소리", evt: "special", song: "노트 속 이야기" },
+      { date: "8/15", day: "토", time: "15:00", miller: "이지연", gregorio: "박슬기", evt: "special", song: "파도가 부른 사람" },
+      { date: "8/15", day: "토", time: "19:00", miller: "전민지", gregorio: "김경민", evt: "special", song: "청새치" },
+      { date: "8/16", day: "일", time: "14:00", miller: "김서연", gregorio: "박슬기", evt: "special", song: "노트 속 이야기" },
+      { date: "8/16", day: "일", time: "18:00", miller: "김서연", gregorio: "이봄소리", evt: "special", song: "그곳이 여기야" },
+
+      // 8/17~8/23 : ep2
+      { date: "8/17", day: "월", time: "14:00", miller: "이지연", gregorio: "김경민", ep: "ep2" },
+      { date: "8/17", day: "월", time: "18:00", miller: "전민지", gregorio: "이봄소리", ep: "ep2" },
+      { date: "8/19", day: "수", time: "16:00", miller: "김서연", gregorio: "이봄소리", ep: "ep2" },
+      { date: "8/19", day: "수", time: "20:00", miller: "김서연", gregorio: "박슬기", ep: "ep2" },
+      { date: "8/20", day: "목", time: "20:00", miller: "홍나현", gregorio: "이봄소리", ep: "ep2" },
+      { date: "8/21", day: "금", time: "20:00", miller: "전민지", gregorio: "김경민", ep: "ep2" },
+      { date: "8/22", day: "토", time: "15:00", miller: "이지연", gregorio: "이봄소리", ep: "ep2" },
+      { date: "8/22", day: "토", time: "19:00", miller: "홍나현", gregorio: "김경민", ep: "ep2" },
+      { date: "8/23", day: "일", time: "14:00", miller: "김서연", gregorio: "박슬기", ep: "ep2" },
+      { date: "8/23", day: "일", time: "18:00", miller: "전민지", gregorio: "박슬기", ep: "ep2" },
+
+      // 8/25~8/30 : ep1 (8/30 18:00은 ep3)
+      { date: "8/25", day: "화", time: "20:00", miller: "홍나현", gregorio: "이봄소리", ep: "ep1" },
+      { date: "8/26", day: "수", time: "16:00", miller: "김서연", gregorio: "김경민", ep: "ep1" },
+      { date: "8/26", day: "수", time: "20:00", miller: "전민지", gregorio: "이봄소리", ep: "ep1" },
+      { date: "8/27", day: "목", time: "20:00", miller: "홍나현", gregorio: "박슬기", ep: "ep1" },
+      { date: "8/28", day: "금", time: "20:00", miller: "이지연", gregorio: "김경민", ep: "ep1" },
+      { date: "8/29", day: "토", time: "15:00", miller: "전민지", gregorio: "박슬기", ep: "ep1" },
+      { date: "8/29", day: "토", time: "19:00", miller: "이지연", gregorio: "박슬기", ep: "ep1" },
+      { date: "8/30", day: "일", time: "14:00", miller: "김서연", gregorio: "이봄소리", ep: "ep1" },
+      { date: "8/30", day: "일", time: "18:00", miller: "김서연", gregorio: "김경민", millerNote: "막공", ep: "ep3" },
+
+      { date: "9/1", day: "화", time: "20:00", miller: "이지연", gregorio: "김경민" },
+      { date: "9/2", day: "수", time: "16:00", miller: "홍나현", gregorio: "박슬기" },
+      { date: "9/2", day: "수", time: "20:00", miller: "전민지", gregorio: "박슬기" },
+      { date: "9/3", day: "목", time: "20:00", miller: "이지연", gregorio: "이봄소리" },
+      { date: "9/4", day: "금", time: "20:00", miller: "전민지", gregorio: "이봄소리" },
+      { date: "9/5", day: "토", time: "15:00", miller: "홍나현", gregorio: "김경민" },
+      { date: "9/5", day: "토", time: "19:00", miller: "홍나현", gregorio: "이봄소리" },
+      { date: "9/6", day: "일", time: "14:00", miller: "이지연", gregorio: "박슬기" },
+      { date: "9/6", day: "일", time: "18:00", miller: "전민지", gregorio: "김경민" },
+      { date: "9/19", day: "토", time: "15:00", miller: "전민지", gregorio: "박슬기" },
+      { date: "9/19", day: "토", time: "19:00", miller: "전민지", gregorio: "박슬기" },
+      { date: "9/20", day: "일", time: "14:00", miller: "이지연", gregorio: "이봄소리" },
+      { date: "9/20", day: "일", time: "18:00", miller: "홍나현", gregorio: "김경민" },
+      { date: "9/22", day: "화", time: "20:00", miller: "이지연", gregorio: "김경민" },
+      { date: "9/23", day: "수", time: "16:00", miller: "전민지", gregorio: "김경민" },
+      { date: "9/23", day: "수", time: "20:00", miller: "전민지", gregorio: "박슬기" },
+      { date: "9/24", day: "목", time: "14:00", miller: "홍나현", gregorio: "이봄소리" },
+      { date: "9/24", day: "목", time: "18:00", miller: "이지연", gregorio: "박슬기" },
+      { date: "9/26", day: "토", time: "14:00", miller: "이지연", gregorio: "이봄소리" },
+      { date: "9/26", day: "토", time: "18:00", miller: "전민지", gregorio: "김경민", millerNote: "막공", gregorioNote: "막공" },
+      { date: "9/27", day: "일", time: "14:00", miller: "이지연", gregorio: "박슬기", millerNote: "막공", gregorioNote: "막공" },
+      { date: "9/27", day: "일", time: "18:00", miller: "홍나현", gregorio: "이봄소리", millerNote: "막공", gregorioNote: "막공" }
+    ];
+
+    const rowConfig = [
+      { row: 'A', left: [1,12], right: [13,24], hold: [1, 24] },
+      { row: 'B', left: [1,12], right: [13,24], hold: [1, 24] },
+      { row: 'C', left: [1,13], right: [14,25], hold: [] },
+      { row: 'D', left: [1,13], right: [14,25], hold: [] },
+      { row: 'E', left: [1,13], right: [14,25], hold: [] },
+      { row: 'F', left: [1,13], right: [14,20], hold: [] },
+      { row: 'G', left: [1,12], right: [13,24], hold: [] },
+      { row: 'H', left: [1,12], right: [13,24], hold: [] },
+      { row: 'I', left: [1,13], right: [14,25], hold: [1, 2, 3, 22, 23, 24, 25] },
+      { row: 'J', center: [1,17], hold: [] }
+    ];
+
+    let tickets = JSON.parse(localStorage.getItem('my_tickets')) || [];
+    let pinnedList = JSON.parse(localStorage.getItem('my_pinned')) || [];
+    let currentFilter = 'ALL';
+
+    window.onload = function() {
+      renderScheduleTable();
+      renderSeatMap();
+      calculatePrice();
+      renderFilterButtons();
+      render();
+    };
+
+    function toggleSchedule() {
+      const box = document.getElementById('scheduleBox');
+      const icon = document.getElementById('scheduleToggleIcon');
+      if (box.style.display === 'none') {
+        box.style.display = 'block';
+        icon.innerText = '▲ 접기';
+      } else {
+        box.style.display = 'none';
+        icon.innerText = '▼ 펼치기';
+      }
+    }
+
+    function renderScheduleTable() {
+      const tbody = document.getElementById('scheduleTableBody');
+      tbody.innerHTML = '';
+
+      let activeActors = [];
+      if (currentFilter !== 'ALL') {
+        activeActors.push(currentFilter);
+      } else if (pinnedList.length > 0) {
+        activeActors = [...pinnedList];
+      }
+
+      const displaySchedule = fullSchedule.filter(item => {
+        if (activeActors.length === 0) return true;
+        return activeActors.includes(item.miller) || activeActors.includes(item.gregorio);
+      });
+
+      if (displaySchedule.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="padding:15px; color:#64748b;">해당 배우의 출연 스케줄이 없습니다.</td></tr>`;
+        return;
+      }
+
+      displaySchedule.forEach((item) => {
+        const tr = document.createElement('tr');
+        
+        let mTag = item.millerNote === '첫공' ? '<span class="tag-badge tag-cheotgong">첫공</span>' : (item.millerNote === '막공' ? '<span class="tag-badge tag-makgong">막공</span>' : '');
+        let gTag = item.gregorioNote === '첫공' ? '<span class="tag-badge tag-cheotgong">첫공</span>' : (item.gregorioNote === '막공' ? '<span class="tag-badge tag-makgong">막공</span>' : '');
+
+        // 에필로그 배지
+        let epHtml = '';
+        if (item.ep === 'ep1') epHtml = '<span class="tag-badge tag-ep1">에필1</span>';
+        else if (item.ep === 'ep2') epHtml = '<span class="tag-badge tag-ep2">에필2</span>';
+        else if (item.ep === 'ep3') epHtml = '<span class="tag-badge tag-ep3">에필3</span>';
+
+        // 이벤트 배지 및 스페셜 커튼콜 넘버명 표기
+        let evtHtml = '';
+        if (item.evt === 'curtaincall') evtHtml = '<span class="event-badge evt-curtaincall">📷 커튼콜</span>';
+        else if (item.evt === 'double') evtHtml = '<span class="event-badge evt-double">Stamp 더블 적립</span>';
+        else if (item.evt === 'special') evtHtml = `<span class="event-badge evt-special">📸✨ 스페셜 커튼콜 (${item.song})</span>`;
+
+        let infoContent = [evtHtml, epHtml].filter(Boolean).join(' ');
+
+        tr.innerHTML = `
+          <td>${item.date} (${item.day})</td>
+          <td>${item.time}</td>
+          <td><strong>${item.miller}</strong>${mTag}</td>
+          <td><strong>${item.gregorio}</strong>${gTag}</td>
+          <td>${infoContent || '-'}</td>
+        `;
+
+        tr.onclick = function() {
+          document.querySelectorAll('.schedule-table tr').forEach(r => r.classList.remove('selected-schedule'));
+          tr.classList.add('selected-schedule');
+
+          document.getElementById('playDate').value = `${item.date} (${item.day}) ${item.time}`;
+        };
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderSeatMap() {
+      const mapEl = document.getElementById('seatMap');
+      mapEl.innerHTML = '';
+
+      rowConfig.forEach(item => {
+        if (item.row === 'F') {
+          const aisle = document.createElement('div');
+          aisle.className = 'aisle-gap';
+          aisle.innerHTML = 'EXIT ▶';
+          mapEl.appendChild(aisle);
+        }
+
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'seat-row';
+
+        const label = document.createElement('div');
+        label.className = 'row-label';
+        label.innerText = item.row;
+        rowDiv.appendChild(label);
+
+        if (item.center) {
+          const block = document.createElement('div');
+          block.className = 'seat-block';
+          for (let n = item.center[0]; n <= item.center[1]; n++) {
+            block.appendChild(createSeatElement(item.row, n, item.hold.includes(n)));
+          }
+          rowDiv.appendChild(block);
+        } else {
+          const leftBlock = document.createElement('div');
+          leftBlock.className = 'seat-block';
+          for (let n = item.left[0]; n <= item.left[1]; n++) {
+            leftBlock.appendChild(createSeatElement(item.row, n, item.hold.includes(n)));
+          }
+          rowDiv.appendChild(leftBlock);
+
+          const rightBlock = document.createElement('div');
+          rightBlock.className = 'seat-block';
+          for (let n = item.right[0]; n <= item.right[1]; n++) {
+            rightBlock.appendChild(createSeatElement(item.row, n, item.hold.includes(n)));
+          }
+          rowDiv.appendChild(rightBlock);
+        }
+
+        mapEl.appendChild(rowDiv);
+      });
+    }
+
+    function createSeatElement(row, num, isHold) {
+      const seatId = `${row}열 ${num}번`;
+      const seatDiv = document.createElement('div');
+      seatDiv.className = `seat ${isHold ? 'hold-seat' : ''}`;
+      seatDiv.dataset.id = seatId;
+      seatDiv.innerText = num;
+
+      seatDiv.onclick = function() {
+        document.getElementById('seatDetail').value = seatId;
+        calculatePrice();
+      };
+      return seatDiv;
+    }
+
+    function calculatePrice() {
+      const gradeSelect = document.getElementById('seatGrade');
+      const basePrice = Number(gradeSelect.options[gradeSelect.selectedIndex].dataset.price);
+      const discountRate = Number(document.getElementById('discount').value);
+
+      const calculated = Math.round(basePrice * discountRate);
+      document.getElementById('finalPrice').value = calculated;
+    }
+
+    function addTicket() {
+      const playDate = document.getElementById('playDate').value.trim();
+      const detail = document.getElementById('seatDetail').value.trim();
+      const grade = document.getElementById('seatGrade').value;
+      const price = Number(document.getElementById('finalPrice').value);
+      const actor = document.getElementById('actorSelect').value;
+
+      if (!detail) {
+        alert('좌석을 선택하거나 입력해 주세요!');
+        return;
+      }
+
+      const newTicket = {
+        id: Date.now(),
+        date: playDate || '날짜 미지정',
+        seat: `${grade} ${detail}`,
+        seatId: detail,
+        price: price,
+        actor: actor
+      };
+
+      tickets.push(newTicket);
+      saveData();
+
+      document.getElementById('seatDetail').value = '';
+      render();
+    }
+
+    function pinCurrentSelectedActor() {
+      const selectedActor = document.getElementById('actorSelect').value;
+      togglePin(selectedActor);
+    }
+
+    function togglePin(actorName) {
+      if (pinnedList.includes(actorName)) {
+        pinnedList = pinnedList.filter(name => name !== actorName);
+      } else {
+        pinnedList.push(actorName);
+      }
+      saveData();
+      renderScheduleTable();
+      render();
+    }
+
+    function filterActor(actorName) {
+      currentFilter = actorName;
+      renderScheduleTable();
+      render();
+    }
+
+    function renderFilterButtons() {
+      const container = document.getElementById('actorFilterContainer');
+      container.innerHTML = actorList.map(name => `
+        <button class="filter-btn" onclick="filterActor('${name}')">${name}</button>
+      `).join('');
+    }
+
+    function saveData() {
+      localStorage.setItem('my_tickets', JSON.stringify(tickets));
+      localStorage.setItem('my_pinned', JSON.stringify(pinnedList));
+    }
+
+    function render() {
+      document.querySelectorAll('.seat').forEach(s => {
+        s.classList.remove('selected-seat', 'multi-selected-seat');
+      });
+
+      const filteredTickets = currentFilter === 'ALL' 
+        ? tickets 
+        : tickets.filter(t => t.actor.includes(currentFilter));
+
+      const seatCounts = {};
+      filteredTickets.forEach(t => {
+        seatCounts[t.seatId] = (seatCounts[t.seatId] || 0) + 1;
+      });
+
+      Object.keys(seatCounts).forEach(seatId => {
+        const targetSeat = document.querySelector(`.seat[data-id="${seatId}"]`);
+        if (targetSeat) {
+          const count = seatCounts[seatId];
+          if (count > 1) {
+            targetSeat.classList.add('multi-selected-seat');
+          } else {
+            targetSeat.classList.add('selected-seat');
+          }
+        }
+      });
+
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        if((currentFilter === 'ALL' && btn.innerText === '전체') || btn.innerText === currentFilter) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      const listEl = document.getElementById('ticketList');
+      listEl.innerHTML = '';
+
+      let total = 0;
+      filteredTickets.forEach(t => total += t.price);
+      document.getElementById('totalPrice').innerText = total.toLocaleString();
+      document.getElementById('ticketCount').innerText = filteredTickets.length;
+
+      filteredTickets.forEach(t => {
+        const li = document.createElement('li');
+        const isPinned = pinnedList.includes(t.actor);
+        const pinIcon = isPinned ? '📌' : '📍';
+
+        li.innerHTML = `
+          <div>
+            <small style="color:#64748b;">[${t.date}]</small>
+            <strong>[${t.seat}]</strong> 
+            <span class="actor-tag" onclick="filterActor('${t.actor}')">${t.actor}</span>
+            <button class="pin-btn" onclick="togglePin('${t.actor}')" style="background:none;border:none;cursor:pointer;">${pinIcon}</button>
+          </div>
+          <div>
+            <strong>${t.price.toLocaleString()}원</strong>
+            <button class="delete-btn" onclick="deleteTicket(${t.id})">삭제</button>
+          </div>
+        `;
+        listEl.appendChild(li);
+      });
+
+      const pinnedEl = document.getElementById('pinnedActors');
+      if (pinnedList.length === 0) {
+        pinnedEl.innerHTML = '없음';
+      } else {
+        pinnedEl.innerHTML = pinnedList.map(name => `<span class="pin-badge">📌 ${name}</span>`).join('');
+      }
+    }
+
+    function deleteTicket(id) {
+      tickets = tickets.filter(t => t.id !== id);
+      saveData();
+      render();
+    }
+  </script>
+
+</body>
+</html>
