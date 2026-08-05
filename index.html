@@ -6,9 +6,12 @@
   <title>뮤지컬 청새치 - 관극 정산</title>
   <style>
     * { box-sizing: border-box; }
+    html, body {
+      overflow-x: hidden; /* 가로 스크롤 완전 방지 */
+    }
     body { 
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-      padding: 8px 4px; 
+      padding: 6px 2px; 
       max-width: 600px; 
       margin: 0 auto; 
       color: #2c3e50; 
@@ -17,19 +20,23 @@
     }
     .container { 
       background: rgba(255, 255, 255, 0.98); 
-      padding: 12px 8px; 
+      padding: 10px 4px; 
       border-radius: 16px; 
       box-shadow: 0 8px 20px rgba(14, 116, 144, 0.15); 
+      width: 100%;
     }
 
+    /* 🖼️ 이미지 저장 원천 차단 (투명 오버레이 적용) */
     .title-image-wrapper {
       text-align: center;
       margin-bottom: 12px;
       border-bottom: 2px solid #0284c7;
       padding-bottom: 8px;
+      position: relative;
+      display: inline-block;
+      width: 100%;
     }
     
-    /* 🖼️ 이미지 저장 방지 CSS 적용 */
     .title-image-wrapper img {
       max-width: 280px;
       width: 100%;
@@ -37,29 +44,43 @@
       display: block;
       margin: 0 auto;
       filter: drop-shadow(0 3px 5px rgba(2, 132, 199, 0.2));
-      -webkit-user-drag: none; /* 크롬/사파리 드래그 방지 */
-      user-select: none; /* 선택 방지 */
-      -webkit-touch-callout: none; /* 모바일 긴 터치 저장 팝업 방지 */
+      -webkit-user-drag: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+      pointer-events: none; /* 클릭/터치 이벤트 무시 */
     }
 
-    /* ✉️ 문의 안내 문구 스타일 (5px & 회색) */
+    /* 이미지 위에 투명 막을 씌워 우클릭/길게 누르기 차단 */
+    .title-image-cover {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      background: rgba(0,0,0,0);
+    }
+
+    /* ✉️ 문의 안내 문구 (5px & 회색) */
     .contact-info {
       font-size: 5px;
       color: #888888;
       margin-top: 4px;
+      position: relative;
+      z-index: 20;
     }
 
     .schedule-toggle-btn {
       width: 100%;
-      padding: 10px 12px;
+      padding: 8px 10px;
       background: #e0f2fe;
       color: #0369a1;
       border: 1px solid #bae6fd;
       border-radius: 8px;
       font-weight: bold;
-      font-size: 13.5px;
+      font-size: 12.5px;
       cursor: pointer;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -69,18 +90,21 @@
       background: #f8fafc;
       border: 1px solid #cbd5e1;
       border-radius: 10px;
-      margin-bottom: 15px;
-      max-height: 340px;
+      margin-bottom: 12px;
+      max-height: 320px;
       overflow-y: auto;
+      overflow-x: hidden;
       position: relative;
+      width: 100%;
     }
 
     .schedule-table {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0;
-      font-size: 11px;
+      font-size: 10px;
       text-align: center;
+      table-layout: fixed; /* 가로 고정 및 넘침 방지 */
     }
     
     .schedule-table th {
@@ -89,51 +113,53 @@
       z-index: 10;
       background: #0284c7;
       color: white;
-      padding: 8px 4px;
+      padding: 6px 2px;
       font-weight: bold;
       border-bottom: 2px solid #0369a1;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      white-space: nowrap;
+      font-size: 10px;
     }
 
     .schedule-table td {
-      padding: 7px 3px;
+      padding: 6px 1px;
       border-bottom: 1px solid #e2e8f0;
       cursor: pointer;
-      white-space: nowrap;
+      word-break: break-all;
     }
     .schedule-table tr:hover td { background: #bae6fd !important; }
     .schedule-table tr:nth-child(even) td { background: #f1f5f9; }
 
-    .col-date { width: 75px; min-width: 75px; }
+    /* 열 폭 지정 */
+    .col-date { width: 18%; }
+    .col-time { width: 12%; }
+    .col-miller { width: 25%; }
+    .col-greg { width: 25%; }
+    .col-evt { width: 20%; }
 
     /* 태그 스타일 */
     .tag-badge {
       display: inline-block;
-      border-radius: 6px;
-      padding: 1px 4px;
-      font-size: 8.5px;
+      border-radius: 4px;
+      padding: 1px 3px;
+      font-size: 8px;
       font-weight: bold;
-      margin-left: 2px;
+      margin-left: 1px;
       color: white;
       vertical-align: middle;
     }
     .tag-cheotgong { background: #0284c7; }
     .tag-makgong { background: #ef4444; }
 
-    /* 에필로그 태그 */
     .tag-ep1 { background: #10b981; }
     .tag-ep2 { background: #f59e0b; }
     .tag-ep3 { background: #8b5cf6; }
 
-    /* 이벤트 태그 */
     .event-badge {
       display: inline-block;
-      padding: 2px 5px;
-      border-radius: 6px;
-      font-size: 9px;
+      padding: 1px 3px;
+      border-radius: 4px;
+      font-size: 8px;
       font-weight: bold;
-      white-space: nowrap;
     }
     .evt-curtaincall { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
     .evt-double { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
@@ -145,77 +171,78 @@
       font-weight: bold;
     }
 
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+    .form-group { display: flex; flex-direction: column; gap: 3px; }
     .form-group.full-width { grid-column: span 2; }
-    label { font-weight: bold; font-size: 12px; color: #0369a1; }
-    select, input { padding: 7px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; outline: none; width: 100%; }
+    label { font-weight: bold; font-size: 11px; color: #0369a1; }
+    select, input { padding: 6px 6px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 11px; outline: none; width: 100%; }
     
     .actor-box { display: flex; gap: 4px; }
-    .pin-toggle-btn { padding: 6px 8px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 11px; white-space: nowrap; }
+    .pin-toggle-btn { padding: 5px 6px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 10.5px; white-space: nowrap; }
 
     button.submit-btn { 
-      padding: 11px; width: 100%; 
+      padding: 10px; width: 100%; 
       background: linear-gradient(90deg, #0284c7, #0369a1); 
       color: white; border: none; border-radius: 8px; 
-      cursor: pointer; font-weight: bold; font-size: 14px; 
-      margin-top: 5px; box-shadow: 0 3px 8px rgba(2, 132, 199, 0.25);
+      cursor: pointer; font-weight: bold; font-size: 13.5px; 
+      margin-top: 4px; box-shadow: 0 3px 8px rgba(2, 132, 199, 0.25);
     }
 
-    .pinned-section { margin-top: 12px; padding: 8px 10px; background: #f0f9ff; border-radius: 8px; border: 1px solid #e0f2fe; font-size: 12px; }
-    .pin-badge { display: inline-block; background: #0284c7; color: white; padding: 2px 8px; border-radius: 10px; margin-right: 4px; font-size: 11px; margin-top: 2px; }
+    .pinned-section { margin-top: 10px; padding: 6px 8px; background: #f0f9ff; border-radius: 8px; border: 1px solid #e0f2fe; font-size: 11px; }
+    .pin-badge { display: inline-block; background: #0284c7; color: white; padding: 1px 6px; border-radius: 8px; margin-right: 3px; font-size: 10px; margin-top: 2px; }
 
-    .filter-section { margin-top: 12px; margin-bottom: 8px; font-size: 12px; }
-    .filter-btn { padding: 3px 7px; margin-right: 2px; background: #e2e8f0; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; margin-bottom: 3px; }
+    .filter-section { margin-top: 10px; margin-bottom: 6px; font-size: 11px; }
+    .filter-btn { padding: 3px 6px; margin-right: 2px; background: #e2e8f0; border: none; border-radius: 4px; cursor: pointer; font-size: 10px; margin-bottom: 3px; }
     .filter-btn.active { background: #0284c7; color: white; font-weight: bold; }
 
-    .result { margin-top: 12px; padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; }
-    .result h3 { margin: 0 0 4px 0; font-size: 15px; color: #0f172a; }
-    .result h4 { margin: 0 0 6px 0; font-size: 13px; color: #334155; }
+    .result { margin-top: 10px; padding: 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; }
+    .result h3 { margin: 0 0 4px 0; font-size: 14px; color: #0f172a; }
+    .result h4 { margin: 0 0 6px 0; font-size: 12px; color: #334155; }
     ul { list-style: none; padding-left: 0; margin-bottom: 0; }
-    li { padding: 6px 0; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+    li { padding: 5px 0; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
     .actor-tag { color: #0284c7; font-weight: bold; cursor: pointer; text-decoration: underline; }
-    .delete-btn { background: #ef4444; color: white; border: none; border-radius: 4px; padding: 2px 5px; font-size: 10px; cursor: pointer; margin-left: 4px; }
+    .delete-btn { background: #ef4444; color: white; border: none; border-radius: 4px; padding: 2px 4px; font-size: 9.5px; cursor: pointer; margin-left: 4px; }
 
-    /* 좌석 배치도 스타일 */
+    /* 좌석 배치도 (가로 스크롤 제거 및 한눈에 보기 최적화) */
     .seat-map-wrapper {
-      margin-top: 20px;
-      padding-top: 15px;
+      margin-top: 15px;
+      padding-top: 12px;
       border-top: 2px dashed #cbd5e1;
+      width: 100%;
     }
-    .seat-map-header { text-align: center; font-weight: bold; font-size: 15px; color: #0369a1; margin-bottom: 10px; }
+    .seat-map-header { text-align: center; font-weight: bold; font-size: 14px; color: #0369a1; margin-bottom: 8px; }
     .stage-box { 
       background: linear-gradient(90deg, #0284c7, #0369a1); 
-      color: #fff; text-align: center; padding: 5px; font-weight: bold; 
-      border-radius: 6px; margin: 0 auto 10px auto; letter-spacing: 4px; font-size: 12px; width: 70%;
+      color: #fff; text-align: center; padding: 4px; font-weight: bold; 
+      border-radius: 6px; margin: 0 auto 8px auto; letter-spacing: 3px; font-size: 11px; width: 80%;
     }
     
     .seat-map-container {
-      background: #f0f9ff; border: 1.5px solid #bae6fd; border-radius: 10px; padding: 10px 2px; width: 100%; overflow-x: auto;
+      background: #f0f9ff; border: 1.5px solid #bae6fd; border-radius: 10px; padding: 8px 1px; width: 100%; overflow: hidden;
     }
 
-    .seat-section { display: flex; flex-direction: column; gap: 3px; width: max-content; margin: 0 auto; }
-    .aisle-gap { height: 14px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; font-weight: bold; color: #0284c7; font-size: 9.5px; }
+    .seat-section { display: flex; flex-direction: column; gap: 2px; width: 100%; }
+    .aisle-gap { height: 12px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-weight: bold; color: #0284c7; font-size: 8.5px; }
 
-    .seat-row { display: flex; justify-content: center; gap: 4px; align-items: center; }
-    .seat-block { display: flex; gap: 1px; }
-    .row-label { font-size: 10.5px; font-weight: bold; width: 12px; text-align: center; color: #0369a1; }
+    .seat-row { display: flex; justify-content: center; gap: 1px; align-items: center; width: 100%; }
+    .seat-block { display: flex; gap: 0.5px; }
+    .row-label { font-size: 9px; font-weight: bold; width: 10px; text-align: center; color: #0369a1; flex-shrink: 0; }
     
     .seat { 
-      width: 14.5px; height: 15px; 
-      background: #7dd3fc; border: 0.5px solid #38bdf8; border-radius: 2px; 
+      width: 11px; height: 12px; 
+      background: #7dd3fc; border: 0.5px solid #38bdf8; border-radius: 1.5px; 
       display: flex; align-items: center; justify-content: center; 
-      font-size: 7.5px; font-weight: bold; cursor: pointer; color: #0f172a;
+      font-size: 6px; font-weight: bold; cursor: pointer; color: #0f172a;
       flex-shrink: 0;
     }
     
     .seat.hold-seat { background: #94a3b8; border-color: #64748b; color: white; }
     .seat.selected-seat { background: #ef4444 !important; color: white !important; border-color: #b91c1c !important; }
-    .seat.multi-selected-seat { background: #f59e0b !important; color: white !important; border-color: #d97706 !important; font-size: 8.5px; }
+    .seat.multi-selected-seat { background: #f59e0b !important; color: white !important; border-color: #d97706 !important; }
 
-    .seat-legend { display: flex; justify-content: center; gap: 8px; font-size: 10.5px; margin-bottom: 8px; flex-wrap: wrap; }
-    .legend-item { display: flex; align-items: center; gap: 3px; }
-    .legend-box { width: 10px; height: 10px; border-radius: 2px; }
+    .seat-legend { display: flex; justify-content: center; gap: 6px; font-size: 9.5px; margin-bottom: 6px; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 2px; }
+    .legend-box { width: 9px; height: 9px; border-radius: 2px; }
   </style>
 </head>
 <body>
@@ -223,7 +250,8 @@
   <div class="container">
     
     <div class="title-image-wrapper">
-      <!-- 🖼️ 우클릭 방지 & 드래그 방지 옵션 추가 -->
+      <!-- 🛡️ 투명 레이어로 클릭 및 긴 터치 완벽 방지 -->
+      <div class="title-image-cover"></div>
       <img src="title_image.png" alt="뮤지컬 청새치 - 관극 정산" oncontextmenu="return false;" ondragstart="return false;">
       <div class="contact-info">@hillpeakk 로 문의주세요.</div>
     </div>
@@ -238,10 +266,10 @@
         <thead>
           <tr>
             <th class="col-date">일시</th>
-            <th>시간</th>
-            <th>밀러/루소</th>
-            <th>그레고리오/에벌린</th>
-            <th>이벤트/에필로그</th>
+            <th class="col-time">시간</th>
+            <th class="col-miller">밀러/루소</th>
+            <th class="col-greg">그레고리오/에벌린</th>
+            <th class="col-evt">이벤트</th>
           </tr>
         </thead>
         <tbody id="scheduleTableBody"></tbody>
@@ -330,7 +358,7 @@
       <div class="stage-box">STAGE</div>
       
       <div class="seat-legend">
-        <div class="legend-item"><div class="legend-box" style="background:#7dd3fc;"></div> 판매석</div>
+        <div class="legend-item"><div class="legend-box" style="background:#7dd3fc;"></div> 일반석</div>
         <div class="legend-item"><div class="legend-box" style="background:#94a3b8;"></div> 보류석</div>
         <div class="legend-item"><div class="legend-box" style="background:#ef4444;"></div> 1회 관람</div>
         <div class="legend-item"><div class="legend-box" style="background:#f59e0b;"></div> 2회 이상 관람</div>
@@ -345,6 +373,10 @@
 
   <script>
     const actorList = ["김경민", "김서연", "박슬기", "이봄소리", "이지연", "전민지", "홍나현"];
+
+    // 배우 역할 분류 (페어 필터링용)
+    const millerActors = ["김서연", "이지연", "전민지", "홍나현"];
+    const gregorioActors = ["김경민", "박슬기", "이봄소리"];
 
     const fullSchedule = [
       { date: "7/21", day: "화", time: "20:00", miller: "이지연", gregorio: "김경민", millerNote: "첫공", gregorioNote: "첫공", ep: "ep1" },
@@ -485,6 +517,7 @@
       }
     }
 
+    /* 🎯 페어 필터링 지원 스케줄 출력 로직 */
     function renderScheduleTable() {
       const tbody = document.getElementById('scheduleTableBody');
       tbody.innerHTML = '';
@@ -498,11 +531,31 @@
 
       const displaySchedule = fullSchedule.filter(item => {
         if (activeActors.length === 0) return true;
+        
+        // 📌 고정이 2명인 경우
+        if (activeActors.length === 2) {
+          const act1 = activeActors[0];
+          const act2 = activeActors[1];
+
+          const isAct1Miller = millerActors.includes(act1);
+          const isAct2Miller = millerActors.includes(act2);
+          const isAct1Greg = gregorioActors.includes(act1);
+          const isAct2Greg = gregorioActors.includes(act2);
+
+          // 밀러 1명 & 그레고리오 1명 페어 조합일 때 -> 페어 회차만 필터링
+          if ((isAct1Miller && isAct2Greg) || (isAct1Greg && isAct2Miller)) {
+            return activeActors.includes(item.miller) && activeActors.includes(item.gregorio);
+          }
+          // 같은 역할에서 2명을 고른 경우 -> 둘 중 한 명이라도 나오면 출력
+          return activeActors.includes(item.miller) || activeActors.includes(item.gregorio);
+        }
+
+        // 📌 고정이 1명인 경우 -> 해당 배우 출연 회차 출력
         return activeActors.includes(item.miller) || activeActors.includes(item.gregorio);
       });
 
       if (displaySchedule.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="padding:15px; color:#64748b;">해당 배우의 출연 스케줄이 없습니다.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="padding:15px; color:#64748b;">해당 조건의 출연 스케줄이 없습니다.</td></tr>`;
         return;
       }
 
@@ -519,17 +572,17 @@
 
         let evtHtml = '';
         if (item.evt === 'curtaincall') evtHtml = '<span class="event-badge evt-curtaincall">📷 커튼콜</span>';
-        else if (item.evt === 'double') evtHtml = '<span class="event-badge evt-double">도장 더블 적립</span>';
-        else if (item.evt === 'special') evtHtml = `<span class="event-badge evt-special">📸✨ 스페셜 커튼콜 (${item.song})</span>`;
+        else if (item.evt === 'double') evtHtml = '<span class="event-badge evt-double">도장 더블</span>';
+        else if (item.evt === 'special') evtHtml = `<span class="event-badge evt-special">📸 스페셜</span>`;
 
         let infoContent = [evtHtml, epHtml].filter(Boolean).join(' ');
 
         tr.innerHTML = `
-          <td class="col-date">${item.date} (${item.day})</td>
-          <td>${item.time}</td>
-          <td><strong>${item.miller}</strong>${mTag}</td>
-          <td><strong>${item.gregorio}</strong>${gTag}</td>
-          <td>${infoContent || '-'}</td>
+          <td class="col-date">${item.date}(${item.day})</td>
+          <td class="col-time">${item.time}</td>
+          <td class="col-miller"><strong>${item.miller}</strong>${mTag}</td>
+          <td class="col-greg"><strong>${item.gregorio}</strong>${gTag}</td>
+          <td class="col-evt">${infoContent || '-'}</td>
         `;
 
         tr.onclick = function() {
