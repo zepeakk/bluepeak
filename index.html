@@ -28,6 +28,8 @@
       border-bottom: 2px solid #0284c7;
       padding-bottom: 8px;
     }
+    
+    /* 🖼️ 이미지 저장 방지 CSS 적용 */
     .title-image-wrapper img {
       max-width: 280px;
       width: 100%;
@@ -35,10 +37,15 @@
       display: block;
       margin: 0 auto;
       filter: drop-shadow(0 3px 5px rgba(2, 132, 199, 0.2));
+      -webkit-user-drag: none; /* 크롬/사파리 드래그 방지 */
+      user-select: none; /* 선택 방지 */
+      -webkit-touch-callout: none; /* 모바일 긴 터치 저장 팝업 방지 */
     }
+
+    /* ✉️ 문의 안내 문구 스타일 (5px & 회색) */
     .contact-info {
-      font-size: 8px;
-      color: #64748b;
+      font-size: 5px;
+      color: #888888;
       margin-top: 4px;
     }
 
@@ -82,19 +89,23 @@
       z-index: 10;
       background: #0284c7;
       color: white;
-      padding: 8px 2px;
+      padding: 8px 4px;
       font-weight: bold;
       border-bottom: 2px solid #0369a1;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      white-space: nowrap;
     }
 
     .schedule-table td {
-      padding: 7px 2px;
+      padding: 7px 3px;
       border-bottom: 1px solid #e2e8f0;
       cursor: pointer;
+      white-space: nowrap;
     }
     .schedule-table tr:hover td { background: #bae6fd !important; }
     .schedule-table tr:nth-child(even) td { background: #f1f5f9; }
+
+    .col-date { width: 75px; min-width: 75px; }
 
     /* 태그 스타일 */
     .tag-badge {
@@ -212,7 +223,8 @@
   <div class="container">
     
     <div class="title-image-wrapper">
-      <img src="title_image.png" alt="뮤지컬 청새치 - 관극 정산">
+      <!-- 🖼️ 우클릭 방지 & 드래그 방지 옵션 추가 -->
+      <img src="title_image.png" alt="뮤지컬 청새치 - 관극 정산" oncontextmenu="return false;" ondragstart="return false;">
       <div class="contact-info">@hillpeakk 로 문의주세요.</div>
     </div>
 
@@ -225,11 +237,11 @@
       <table class="schedule-table">
         <thead>
           <tr>
-            <th>일시</th>
+            <th class="col-date">일시</th>
             <th>시간</th>
-            <th>밀러 / 루소</th>
-            <th>그레고리오 / 에벌린</th>
-            <th>이벤트 / 에필로그</th>
+            <th>밀러/루소</th>
+            <th>그레고리오/에벌린</th>
+            <th>이벤트/에필로그</th>
           </tr>
         </thead>
         <tbody id="scheduleTableBody"></tbody>
@@ -296,7 +308,7 @@
     <button class="submit-btn" onclick="addTicket()">티켓 기록 추가 & 좌석 색칠 🎨</button>
 
     <div class="pinned-section">
-      <strong>📌 고정 배우: </strong>
+      <strong>📌 고정 배우 (최대 2명): </strong>
       <span id="pinnedActors">없음</span>
     </div>
 
@@ -334,7 +346,6 @@
   <script>
     const actorList = ["김경민", "김서연", "박슬기", "이봄소리", "이지연", "전민지", "홍나현"];
 
-    // 에필로그, 이벤트 및 스페셜 커튼콜 넘버리스트 데이터 통합
     const fullSchedule = [
       { date: "7/21", day: "화", time: "20:00", miller: "이지연", gregorio: "김경민", millerNote: "첫공", gregorioNote: "첫공", ep: "ep1" },
       { date: "7/22", day: "수", time: "20:00", miller: "김서연", gregorio: "이봄소리", millerNote: "첫공", gregorioNote: "첫공", ep: "ep1" },
@@ -345,7 +356,6 @@
       { date: "7/26", day: "일", time: "14:00", miller: "김서연", gregorio: "김경민", ep: "ep1" },
       { date: "7/26", day: "일", time: "18:00", miller: "홍나현", gregorio: "김경민", ep: "ep1" },
       
-      // 7/28~8/2 : 커튼콜 이벤트 + ep2
       { date: "7/28", day: "화", time: "20:00", miller: "홍나현", gregorio: "박슬기", ep: "ep2", evt: "curtaincall" },
       { date: "7/29", day: "수", time: "16:00", miller: "김서연", gregorio: "이봄소리", ep: "ep2", evt: "curtaincall" },
       { date: "7/29", day: "수", time: "20:00", miller: "김서연", gregorio: "박슬기", ep: "ep2", evt: "curtaincall" },
@@ -356,7 +366,6 @@
       { date: "8/2", day: "일", time: "14:00", miller: "김서연", gregorio: "이봄소리", ep: "ep2", evt: "curtaincall" },
       { date: "8/2", day: "일", time: "18:00", miller: "전민지", gregorio: "김경민", ep: "ep2", evt: "curtaincall" },
 
-      // 8/4~8/9 : 더블 적립 이벤트 + ep1 (8/9 18:00은 ep2)
       { date: "8/4", day: "화", time: "20:00", miller: "전민지", gregorio: "박슬기", ep: "ep1", evt: "double" },
       { date: "8/5", day: "수", time: "16:00", miller: "김서연", gregorio: "김경민", ep: "ep1", evt: "double" },
       { date: "8/5", day: "수", time: "20:00", miller: "김서연", gregorio: "박슬기", ep: "ep1", evt: "double" },
@@ -367,7 +376,6 @@
       { date: "8/9", day: "일", time: "14:00", miller: "홍나현", gregorio: "이봄소리", ep: "ep1", evt: "double" },
       { date: "8/9", day: "일", time: "18:00", miller: "김서연", gregorio: "김경민", ep: "ep2", evt: "double" },
 
-      // 8/11~8/16 : 스페셜 커튼콜 이벤트 + 넘버리스트
       { date: "8/11", day: "화", time: "20:00", miller: "홍나현", gregorio: "박슬기", evt: "special", song: "네가 뭔데" },
       { date: "8/12", day: "수", time: "16:00", miller: "이지연", gregorio: "김경민", evt: "special", song: "네가 뭔데" },
       { date: "8/12", day: "수", time: "20:00", miller: "김서연", gregorio: "이봄소리", evt: "special", song: "파도가 부른 사람" },
@@ -378,7 +386,6 @@
       { date: "8/16", day: "일", time: "14:00", miller: "김서연", gregorio: "박슬기", evt: "special", song: "노트 속 이야기" },
       { date: "8/16", day: "일", time: "18:00", miller: "김서연", gregorio: "이봄소리", evt: "special", song: "그곳이 여기야" },
 
-      // 8/17~8/23 : ep2
       { date: "8/17", day: "월", time: "14:00", miller: "이지연", gregorio: "김경민", ep: "ep2" },
       { date: "8/17", day: "월", time: "18:00", miller: "전민지", gregorio: "이봄소리", ep: "ep2" },
       { date: "8/19", day: "수", time: "16:00", miller: "김서연", gregorio: "이봄소리", ep: "ep2" },
@@ -390,7 +397,6 @@
       { date: "8/23", day: "일", time: "14:00", miller: "김서연", gregorio: "박슬기", ep: "ep2" },
       { date: "8/23", day: "일", time: "18:00", miller: "전민지", gregorio: "박슬기", ep: "ep2" },
 
-      // 8/25~8/30 : ep1 (8/30 18:00은 ep3)
       { date: "8/25", day: "화", time: "20:00", miller: "홍나현", gregorio: "이봄소리", ep: "ep1" },
       { date: "8/26", day: "수", time: "16:00", miller: "김서연", gregorio: "김경민", ep: "ep1" },
       { date: "8/26", day: "수", time: "20:00", miller: "전민지", gregorio: "이봄소리", ep: "ep1" },
@@ -410,6 +416,23 @@
       { date: "9/5", day: "토", time: "19:00", miller: "홍나현", gregorio: "이봄소리" },
       { date: "9/6", day: "일", time: "14:00", miller: "이지연", gregorio: "박슬기" },
       { date: "9/6", day: "일", time: "18:00", miller: "전민지", gregorio: "김경민" },
+
+      { date: "9/8", day: "화", time: "20:00", miller: "홍나현", gregorio: "이봄소리" },
+      { date: "9/9", day: "수", time: "16:00", miller: "이지연", gregorio: "박슬기" },
+      { date: "9/9", day: "수", time: "20:00", miller: "전민지", gregorio: "이봄소리" },
+      { date: "9/10", day: "목", time: "20:00", miller: "전민지", gregorio: "김경민" },
+      { date: "9/11", day: "금", time: "20:00", miller: "홍나현", gregorio: "이봄소리" },
+      { date: "9/12", day: "토", time: "15:00", miller: "이지연", gregorio: "박슬기" },
+      { date: "9/12", day: "토", time: "19:00", miller: "전민지", gregorio: "박슬기" },
+      { date: "9/13", day: "일", time: "14:00", miller: "홍나현", gregorio: "김경민" },
+      { date: "9/13", day: "일", time: "18:00", miller: "이지연", gregorio: "김경민" },
+      { date: "9/15", day: "화", time: "20:00", miller: "홍나현", gregorio: "박슬기" },
+      { date: "9/16", day: "수", time: "16:00", miller: "이지연", gregorio: "김경민" },
+      { date: "9/16", day: "수", time: "20:00", miller: "홍나현", gregorio: "이봄소리" },
+      { date: "9/17", day: "목", time: "20:00", miller: "전민지", gregorio: "이봄소리" },
+      { date: "9/18", day: "금", time: "16:00", miller: "홍나현", gregorio: "김경민" },
+      { date: "9/18", day: "금", time: "20:00", miller: "이지연", gregorio: "김경민" },
+
       { date: "9/19", day: "토", time: "15:00", miller: "전민지", gregorio: "박슬기" },
       { date: "9/19", day: "토", time: "19:00", miller: "전민지", gregorio: "박슬기" },
       { date: "9/20", day: "일", time: "14:00", miller: "이지연", gregorio: "이봄소리" },
@@ -489,22 +512,20 @@
         let mTag = item.millerNote === '첫공' ? '<span class="tag-badge tag-cheotgong">첫공</span>' : (item.millerNote === '막공' ? '<span class="tag-badge tag-makgong">막공</span>' : '');
         let gTag = item.gregorioNote === '첫공' ? '<span class="tag-badge tag-cheotgong">첫공</span>' : (item.gregorioNote === '막공' ? '<span class="tag-badge tag-makgong">막공</span>' : '');
 
-        // 에필로그 배지
         let epHtml = '';
         if (item.ep === 'ep1') epHtml = '<span class="tag-badge tag-ep1">에필1</span>';
         else if (item.ep === 'ep2') epHtml = '<span class="tag-badge tag-ep2">에필2</span>';
         else if (item.ep === 'ep3') epHtml = '<span class="tag-badge tag-ep3">에필3</span>';
 
-        // 이벤트 배지 및 스페셜 커튼콜 넘버명 표기
         let evtHtml = '';
         if (item.evt === 'curtaincall') evtHtml = '<span class="event-badge evt-curtaincall">📷 커튼콜</span>';
-        else if (item.evt === 'double') evtHtml = '<span class="event-badge evt-double">Stamp 더블 적립</span>';
+        else if (item.evt === 'double') evtHtml = '<span class="event-badge evt-double">도장 더블 적립</span>';
         else if (item.evt === 'special') evtHtml = `<span class="event-badge evt-special">📸✨ 스페셜 커튼콜 (${item.song})</span>`;
 
         let infoContent = [evtHtml, epHtml].filter(Boolean).join(' ');
 
         tr.innerHTML = `
-          <td>${item.date} (${item.day})</td>
+          <td class="col-date">${item.date} (${item.day})</td>
           <td>${item.time}</td>
           <td><strong>${item.miller}</strong>${mTag}</td>
           <td><strong>${item.gregorio}</strong>${gTag}</td>
@@ -629,6 +650,10 @@
       if (pinnedList.includes(actorName)) {
         pinnedList = pinnedList.filter(name => name !== actorName);
       } else {
+        if (pinnedList.length >= 2) {
+          alert('고정 배우는 최대 2명까지만 선택할 수 있습니다.');
+          return;
+        }
         pinnedList.push(actorName);
       }
       saveData();
