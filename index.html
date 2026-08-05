@@ -160,6 +160,7 @@
       border-radius: 4px;
       font-size: 8px;
       font-weight: bold;
+      cursor: pointer;
     }
     .evt-curtaincall { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
     .evt-double { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
@@ -517,6 +518,10 @@
       }
     }
 
+    function showSongAlert(songName) {
+      alert(`🎵 스페셜 콜 넘버: [${songName}]`);
+    }
+
     /* 🎯 페어 필터링 지원 스케줄 출력 로직 */
     function renderScheduleTable() {
       const tbody = document.getElementById('scheduleTableBody');
@@ -532,7 +537,6 @@
       const displaySchedule = fullSchedule.filter(item => {
         if (activeActors.length === 0) return true;
         
-        // 📌 고정이 2명인 경우
         if (activeActors.length === 2) {
           const act1 = activeActors[0];
           const act2 = activeActors[1];
@@ -542,15 +546,12 @@
           const isAct1Greg = gregorioActors.includes(act1);
           const isAct2Greg = gregorioActors.includes(act2);
 
-          // 밀러 1명 & 그레고리오 1명 페어 조합일 때 -> 페어 회차만 필터링
           if ((isAct1Miller && isAct2Greg) || (isAct1Greg && isAct2Miller)) {
             return activeActors.includes(item.miller) && activeActors.includes(item.gregorio);
           }
-          // 같은 역할에서 2명을 고른 경우 -> 둘 중 한 명이라도 나오면 출력
           return activeActors.includes(item.miller) || activeActors.includes(item.gregorio);
         }
 
-        // 📌 고정이 1명인 경우 -> 해당 배우 출연 회차 출력
         return activeActors.includes(item.miller) || activeActors.includes(item.gregorio);
       });
 
@@ -573,7 +574,7 @@
         let evtHtml = '';
         if (item.evt === 'curtaincall') evtHtml = '<span class="event-badge evt-curtaincall">📷 커튼콜</span>';
         else if (item.evt === 'double') evtHtml = '<span class="event-badge evt-double">도장 더블</span>';
-        else if (item.evt === 'special') evtHtml = `<span class="event-badge evt-special">📸 스페셜</span>`;
+        else if (item.evt === 'special') evtHtml = `<span class="event-badge evt-special" onclick="event.stopPropagation(); showSongAlert('${item.song}')">📸 스콜</span>`;
 
         let infoContent = [evtHtml, epHtml].filter(Boolean).join(' ');
 
