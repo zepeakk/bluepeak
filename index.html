@@ -228,7 +228,7 @@
       align-items: center; 
       font-size: 10.5px; 
       gap: 6px;
-      flex-wrap: wrap; /* 아이폰 화면 폭 고려 유연한 대응 */
+      flex-wrap: wrap;
     }
 
     li.future-ticket {
@@ -244,7 +244,7 @@
       gap: 4px;
       flex: 1;
       min-width: 0;
-      flex-wrap: nowrap; /* 아이템 내 줄바꿈 방지 */
+      flex-wrap: nowrap;
     }
 
     .ticket-date { color: #64748b; font-size: 10px; white-space: nowrap; font-weight: bold; flex-shrink: 0; }
@@ -252,7 +252,6 @@
     
     .ticket-seat { font-weight: bold; white-space: nowrap; flex-shrink: 0; }
     
-    /* 배우 이름 영역 줄바꿈 절대 금지 */
     .ticket-actors { 
       display: flex; 
       align-items: center; 
@@ -266,7 +265,7 @@
       align-items: center;
       gap: 4px;
       flex-shrink: 0; 
-      margin-left: auto; /* 우측 정렬 유지 */
+      margin-left: auto;
     }
 
     .status-select {
@@ -280,7 +279,6 @@
       text-align: center;
     }
 
-    /* 배우 이름 한 줄 고정 핵심 CSS */
     .actor-tag { 
       color: #0284c7; 
       font-weight: bold; 
@@ -332,7 +330,6 @@
     .seat.hold-seat { background: #94a3b8; border-color: #64748b; color: white; }
     .seat.selected-seat { background: #ef4444 !important; color: white !important; border-color: #b91c1c !important; }
     .seat.multi-selected-seat { background: #f59e0b !important; color: white !important; border-color: #d97706 !important; }
-    .seat.status-selected-seat { background: #a855f7 !important; color: white !important; border-color: #7e22ce !important; }
 
     .seat-legend { display: flex; justify-content: center; gap: 6px; font-size: 9.5px; margin-bottom: 6px; flex-wrap: wrap; }
     .legend-item { display: flex; align-items: center; gap: 2px; }
@@ -458,7 +455,6 @@
         <div class="legend-item"><div class="legend-box" style="background:#94a3b8;"></div> 보류석</div>
         <div class="legend-item"><div class="legend-box" style="background:#ef4444;"></div> 1회 관람</div>
         <div class="legend-item"><div class="legend-box" style="background:#f59e0b;"></div> 2회 이상 관람</div>
-        <div class="legend-item"><div class="legend-box" style="background:#a855f7;"></div> 양도/양수/나눔</div>
       </div>
 
       <div class="seat-map-container">
@@ -868,10 +864,12 @@
     }
 
     function render() {
+      // 1. 좌석 색상 초기화
       document.querySelectorAll('.seat').forEach(s => {
-        s.classList.remove('selected-seat', 'multi-selected-seat', 'status-selected-seat');
+        s.classList.remove('selected-seat', 'multi-selected-seat');
       });
 
+      // 2. 배우 필터링
       const filteredTickets = currentFilter === 'ALL' 
         ? tickets 
         : tickets.filter(t => {
@@ -892,32 +890,29 @@
         return timeA - timeB;
       });
 
+      // 3. 좌석 카운트 계산 ('양도' 건은 좌석 카운트에서 제외 / '양수', '나눔'은 관람으로 카운트)
       const seatCounts = {};
-      const seatStatuses = {};
 
       filteredTickets.forEach(t => {
-        seatCounts[t.seatId] = (seatCounts[t.seatId] || 0) + 1;
-        if (t.status === '양도' || t.status === '양수' || t.status === '나눔') {
-          seatStatuses[t.seatId] = t.status;
+        if (t.status !== '양도') {
+          seatCounts[t.seatId] = (seatCounts[t.seatId] || 0) + 1;
         }
       });
 
+      // 4. 배치도 좌석 색상 채우기
       Object.keys(seatCounts).forEach(seatId => {
         const targetSeat = document.querySelector(`.seat[data-id="${seatId}"]`);
         if (targetSeat) {
-          if (seatStatuses[seatId]) {
-            targetSeat.classList.add('status-selected-seat');
-          } else {
-            const count = seatCounts[seatId];
-            if (count > 1) {
-              targetSeat.classList.add('multi-selected-seat');
-            } else {
-              targetSeat.classList.add('selected-seat');
-            }
+          const count = seatCounts[seatId];
+          if (count > 1) {
+            targetSeat.classList.add('multi-selected-seat');
+          } else if (count === 1) {
+            targetSeat.classList.add('selected-seat');
           }
         }
       });
 
+      // 5. 필터 버튼 활성화 표시
       document.querySelectorAll('.filter-btn').forEach(btn => {
         if((currentFilter === 'ALL' && btn.innerText === '전체') || btn.innerText === currentFilter) {
           btn.classList.add('active');
@@ -926,14 +921,24 @@
         }
       });
 
+      // 6. 총 정산 금액 및 관극 회차 계산 ('양도' 건은 제외)
       const listEl = document.getElementById('ticketList');
       listEl.innerHTML = '';
 
       let total = 0;
-      filteredTickets.forEach(t => total += t.price);
-      document.getElementById('totalPrice').innerText = total.toLocaleString();
-      document.getElementById('ticketCount').innerText = filteredTickets.length;
+      let validTicketCount = 0;
 
+      filteredTickets.forEach(t => {
+        if (t.status !== '양도') {
+          total += t.price;
+          validTicketCount++;
+        }
+      });
+
+      document.getElementById('totalPrice').innerText = total.toLocaleString();
+      document.getElementById('ticketCount').innerText = validTicketCount;
+
+      // 7. 티켓 목록 리스트 출력
       filteredTickets.forEach(t => {
         const li = document.createElement('li');
         
@@ -968,6 +973,7 @@
         listEl.appendChild(li);
       });
 
+      // 8. 고정 배우 정보 업데이트
       const pinnedEl = document.getElementById('pinnedActors');
       if (pinnedList.length === 0) {
         pinnedEl.innerHTML = '없음';
