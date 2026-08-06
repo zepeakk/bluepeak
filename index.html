@@ -7,7 +7,7 @@
   <style>
     * { box-sizing: border-box; }
     html, body {
-      overflow-x: hidden; /* 가로 스크롤 방지 */
+      overflow-x: hidden;
     }
     body { 
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
@@ -26,7 +26,6 @@
       width: 100%;
     }
 
-    /* 🖼️ 이미지 저장 원천 차단 (투명 오버레이 적용) */
     .title-image-wrapper {
       text-align: center;
       margin-bottom: 12px;
@@ -60,7 +59,6 @@
       background: rgba(0,0,0,0);
     }
 
-    /* ✉️ 문의 안내 문구 */
     .contact-info {
       font-size: 5px;
       color: #888888;
@@ -128,14 +126,12 @@
     .schedule-table tr:hover td { background: #bae6fd !important; }
     .schedule-table tr:nth-child(even) td { background: #f1f5f9; }
 
-    /* 열 폭 지정 */
     .col-date { width: 18%; }
     .col-time { width: 12%; }
     .col-miller { width: 25%; }
     .col-greg { width: 25%; }
     .col-evt { width: 20%; }
 
-    /* 태그 스타일 */
     .tag-badge {
       display: inline-block;
       border-radius: 4px;
@@ -199,11 +195,50 @@
     .result h3 { margin: 0 0 4px 0; font-size: 14px; color: #0f172a; }
     .result h4 { margin: 0 0 6px 0; font-size: 12px; color: #334155; }
     ul { list-style: none; padding-left: 0; margin-bottom: 0; }
-    li { padding: 5px 0; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
-    .actor-tag { color: #0284c7; font-weight: bold; cursor: pointer; text-decoration: underline; margin-right: 2px; }
-    .delete-btn { background: #ef4444; color: white; border: none; border-radius: 4px; padding: 2px 4px; font-size: 9.5px; cursor: pointer; margin-left: 4px; }
+    
+    li { 
+      padding: 6px 0; 
+      border-bottom: 1px solid #e2e8f0; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      font-size: 11px; 
+      gap: 4px;
+    }
+    
+    .ticket-info-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: nowrap;
+      overflow: hidden;
+    }
 
-    /* 좌석 배치도 */
+    .ticket-date { color: #64748b; font-size: 10.5px; white-space: nowrap; }
+    .ticket-seat { font-weight: bold; white-space: nowrap; min-width: 95px; }
+    .ticket-actors { display: flex; align-items: center; gap: 2px; white-space: nowrap; }
+
+    .ticket-action-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .status-select {
+      padding: 2px 3px;
+      font-size: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      background: #ffffff;
+      cursor: pointer;
+      width: 52px;
+    }
+
+    .actor-tag { color: #0284c7; font-weight: bold; cursor: pointer; text-decoration: underline; margin-right: 1px; }
+    .delete-btn { background: #ef4444; color: white; border: none; border-radius: 4px; padding: 3px 5px; font-size: 9.5px; cursor: pointer; }
+
+    /* 📍 좌석 배치도 스타일 개선 (세로 일자 통로 적용) */
     .seat-map-wrapper {
       margin-top: 15px;
       padding-top: 12px;
@@ -218,18 +253,22 @@
     }
     
     .seat-map-container {
-      background: #f0f9ff; border: 1.5px solid #bae6fd; border-radius: 10px; padding: 8px 1px; width: 100%; overflow: hidden;
+      background: #f0f9ff; border: 1.5px solid #bae6fd; border-radius: 10px; padding: 10px 4px; width: 100%; overflow-x: auto;
     }
 
-    .seat-section { display: flex; flex-direction: column; gap: 2px; width: 100%; }
-    .aisle-gap { height: 12px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-weight: bold; color: #0284c7; font-size: 8.5px; }
+    .seat-section { display: flex; flex-direction: column; gap: 3px; width: 100%; min-width: 320px; }
+    .aisle-gap { height: 14px; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; font-weight: bold; color: #0284c7; font-size: 8.5px; }
 
-    .seat-row { display: flex; justify-content: center; gap: 1px; align-items: center; width: 100%; }
-    .seat-block { display: flex; gap: 0.5px; }
-    .row-label { font-size: 9px; font-weight: bold; width: 10px; text-align: center; color: #0369a1; flex-shrink: 0; }
+    /* 💡 좌/우 블록을 고정 폭 그리드로 일자 정렬 */
+    .seat-row { display: flex; justify-content: center; align-items: center; width: 100%; gap: 12px; }
+    .seat-block { display: flex; gap: 1px; min-width: 150px; }
+    .seat-block.left-block { justify-content: flex-end; }
+    .seat-block.right-block { justify-content: flex-start; }
+
+    .row-label { font-size: 9px; font-weight: bold; width: 12px; text-align: center; color: #0369a1; flex-shrink: 0; }
     
     .seat { 
-      width: 11px; height: 12px; 
+      width: 10.5px; height: 12px; 
       background: #7dd3fc; border: 0.5px solid #38bdf8; border-radius: 1.5px; 
       display: flex; align-items: center; justify-content: center; 
       font-size: 6px; font-weight: bold; cursor: pointer; color: #0f172a;
@@ -318,7 +357,6 @@
       <div class="form-group">
         <label>출연진</label>
         <div class="actor-box">
-          <!-- 💡 1. 처음은 빈칸으로 설정 -->
           <select id="actorSelect">
             <option value="">선택 안 함</option>
             <option value="김경민">김경민</option>
@@ -490,13 +528,13 @@
       { row: 'G', left: [1,12], right: [13,24], hold: [] },
       { row: 'H', left: [1,12], right: [13,24], hold: [] },
       { row: 'I', left: [1,13], right: [14,25], hold: [1, 2, 3, 22, 23, 24, 25] },
-      { row: 'J', center: [1,17], hold: [] }
+      { row: 'J', left: [1,9], right: [10,17], hold: [] }
     ];
 
     let tickets = JSON.parse(localStorage.getItem('my_tickets')) || [];
     let pinnedList = JSON.parse(localStorage.getItem('my_pinned')) || [];
     let currentFilter = 'ALL';
-    let selectedScheduleActors = []; // 선택한 회차의 배우 2명 보관용
+    let selectedScheduleActors = [];
 
     window.onload = function() {
       renderScheduleTable();
@@ -590,8 +628,6 @@
           tr.classList.add('selected-schedule');
 
           document.getElementById('playDate').value = `${item.date} (${item.day}) ${item.time}`;
-          
-          // 💡 2. 선택한 회차의 배우 2명 자동 저장
           selectedScheduleActors = [item.miller, item.gregorio];
         };
 
@@ -599,6 +635,7 @@
       });
     }
 
+    /* 💡 배치도 일직선 통로 구현 */
     function renderSeatMap() {
       const mapEl = document.getElementById('seatMap');
       mapEl.innerHTML = '';
@@ -619,23 +656,18 @@
         label.innerText = item.row;
         rowDiv.appendChild(label);
 
-        if (item.center) {
-          const block = document.createElement('div');
-          block.className = 'seat-block';
-          for (let n = item.center[0]; n <= item.center[1]; n++) {
-            block.appendChild(createSeatElement(item.row, n, item.hold.includes(n)));
-          }
-          rowDiv.appendChild(block);
-        } else {
-          const leftBlock = document.createElement('div');
-          leftBlock.className = 'seat-block';
-          for (let n = item.left[0]; n <= item.left[1]; n++) {
-            leftBlock.appendChild(createSeatElement(item.row, n, item.hold.includes(n)));
-          }
-          rowDiv.appendChild(leftBlock);
+        // 왼쪽 블록 (우측 정렬로 통로선 일직선 맞춤)
+        const leftBlock = document.createElement('div');
+        leftBlock.className = 'seat-block left-block';
+        for (let n = item.left[0]; n <= item.left[1]; n++) {
+          leftBlock.appendChild(createSeatElement(item.row, n, item.hold.includes(n)));
+        }
+        rowDiv.appendChild(leftBlock);
 
+        // 오른쪽 블록 (좌측 정렬로 통로선 일직선 맞춤)
+        if (item.right) {
           const rightBlock = document.createElement('div');
-          rightBlock.className = 'seat-block';
+          rightBlock.className = 'seat-block right-block';
           for (let n = item.right[0]; n <= item.right[1]; n++) {
             rightBlock.appendChild(createSeatElement(item.row, n, item.hold.includes(n)));
           }
@@ -681,7 +713,6 @@
         return;
       }
 
-      // 💡 2. 수동 선택한 배우가 있으면 우선 적용하고, 없으면 회차 클릭 시 선택된 2명 배우 모두 적용
       let finalActors = [];
       if (manualActor) {
         finalActors = [manualActor];
@@ -697,7 +728,8 @@
         seat: `${grade} ${detail}`,
         seatId: detail,
         price: price,
-        actors: finalActors
+        actors: finalActors,
+        status: '' // 기본 공백 값
       };
 
       tickets.push(newTicket);
@@ -705,6 +737,14 @@
 
       document.getElementById('seatDetail').value = '';
       render();
+    }
+
+    function updateTicketStatus(id, newStatus) {
+      const target = tickets.find(t => t.id === id);
+      if (target) {
+        target.status = newStatus;
+        saveData();
+      }
     }
 
     function pinCurrentSelectedActor() {
@@ -754,7 +794,6 @@
         s.classList.remove('selected-seat', 'multi-selected-seat');
       });
 
-      // 배우 목록 기반 필터링
       const filteredTickets = currentFilter === 'ALL' 
         ? tickets 
         : tickets.filter(t => {
@@ -800,22 +839,30 @@
       filteredTickets.forEach(t => {
         const li = document.createElement('li');
         
-        // 💡 2. 배열 형태의 배우 2명 표시 로직 처리
         let actorArr = t.actors || (t.actor ? [t.actor] : []);
         let actorsHtml = actorArr.map(actName => {
           const isPinned = pinnedList.includes(actName);
           const pinIcon = isPinned ? '📌' : '📍';
-          return `<span class="actor-tag" onclick="filterActor('${actName}')">${actName}</span><button class="pin-btn" onclick="togglePin('${actName}')" style="background:none;border:none;cursor:pointer;padding:0 2px;">${pinIcon}</button>`;
+          return `<span class="actor-tag" onclick="filterActor('${actName}')">${actName}</span><button class="pin-btn" onclick="togglePin('${actName}')" style="background:none;border:none;cursor:pointer;padding:0 1px;">${pinIcon}</button>`;
         }).join(' ');
 
+        const currentStatus = t.status || '';
+
+        /* 💡 수정: 금액 -> 상태선택탭 -> 삭제버튼 순서 적용 + 공백 처리 */
         li.innerHTML = `
-          <div>
-            <small style="color:#64748b;">[${t.date}]</small>
-            <strong>[${t.seat}]</strong> 
-            ${actorsHtml}
+          <div class="ticket-info-group">
+            <span class="ticket-date">[${t.date}]</span>
+            <span class="ticket-seat">${t.seat}</span> 
+            <span class="ticket-actors">${actorsHtml}</span>
           </div>
-          <div>
+          <div class="ticket-action-group">
             <strong>${t.price.toLocaleString()}원</strong>
+            <select class="status-select" onchange="updateTicketStatus(${t.id}, this.value)">
+              <option value="" ${currentStatus === '' ? 'selected' : ''}></option>
+              <option value="양도" ${currentStatus === '양도' ? 'selected' : ''}>양도</option>
+              <option value="양수" ${currentStatus === '양수' ? 'selected' : ''}>양수</option>
+              <option value="나눔" ${currentStatus === '나눔' ? 'selected' : ''}>나눔</option>
+            </select>
             <button class="delete-btn" onclick="deleteTicket(${t.id})">삭제</button>
           </div>
         `;
