@@ -168,13 +168,35 @@
     }
 
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
-    .form-group { display: flex; flex-direction: column; gap: 3px; }
+    .form-group { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
     .form-group.full-width { grid-column: span 2; }
     label { font-weight: bold; font-size: 11px; color: #0369a1; }
-    select, input { padding: 6px 6px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 11px; outline: none; width: 100%; }
     
-    .actor-box { display: flex; gap: 4px; }
-    .pin-toggle-btn { padding: 5px 6px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 10.5px; white-space: nowrap; }
+    select, input { 
+      padding: 6px 6px; 
+      border: 1px solid #cbd5e1; 
+      border-radius: 6px; 
+      font-size: 11px; 
+      outline: none; 
+      width: 100%; 
+      max-width: 100%; 
+    }
+    
+    .actor-box { display: flex; gap: 4px; align-items: center; width: 100%; }
+    .actor-box select { flex: 1; min-width: 0; }
+    
+    .pin-toggle-btn { 
+      padding: 5px 6px; 
+      background: #e0f2fe; 
+      color: #0369a1; 
+      border: 1px solid #bae6fd; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-weight: bold; 
+      font-size: 10.5px; 
+      white-space: nowrap; 
+      flex-shrink: 0;
+    }
 
     button.submit-btn { 
       padding: 10px; width: 100%; 
@@ -197,48 +219,72 @@
     ul { list-style: none; padding-left: 0; margin-bottom: 0; }
     
     li { 
-      padding: 6px 0; 
+      padding: 8px 4px; 
       border-bottom: 1px solid #e2e8f0; 
       display: flex; 
       justify-content: space-between; 
       align-items: center; 
-      font-size: 11px; 
+      font-size: 10.5px; 
       gap: 4px;
+      flex-wrap: wrap; 
+    }
+
+    li.future-ticket {
+      background: #d1fae5;
+      border-radius: 6px;
+      border-left: 4px solid #10b981;
+      padding-left: 6px;
     }
     
     .ticket-info-group {
       display: flex;
       align-items: center;
-      gap: 6px;
-      flex-wrap: nowrap;
-      overflow: hidden;
+      gap: 4px;
+      flex: 1;
+      min-width: 0;
+      flex-wrap: wrap; 
     }
 
-    .ticket-date { color: #64748b; font-size: 10.5px; white-space: nowrap; }
-    .ticket-seat { font-weight: bold; white-space: nowrap; min-width: 95px; }
-    .ticket-actors { display: flex; align-items: center; gap: 2px; white-space: nowrap; }
+    .ticket-date { color: #64748b; font-size: 10px; white-space: nowrap; font-weight: bold; }
+    .future-ticket .ticket-date { color: #065f46; } 
+    
+    .ticket-seat { font-weight: bold; white-space: nowrap; flex-shrink: 0; }
+    
+    .ticket-actors { 
+      display: flex; 
+      align-items: center; 
+      gap: 3px; 
+      flex-wrap: wrap; 
+    }
 
     .ticket-action-group {
       display: flex;
       align-items: center;
-      gap: 5px;
-      flex-shrink: 0;
+      gap: 4px;
+      flex-shrink: 0; 
     }
 
     .status-select {
-      padding: 2px 3px;
-      font-size: 10px;
+      padding: 2px 1px;
+      font-size: 9.5px;
       border: 1px solid #cbd5e1;
       border-radius: 4px;
       background: #ffffff;
       cursor: pointer;
-      width: 52px;
+      width: 44px;
     }
 
-    .actor-tag { color: #0284c7; font-weight: bold; cursor: pointer; text-decoration: underline; margin-right: 1px; }
-    .delete-btn { background: #ef4444; color: white; border: none; border-radius: 4px; padding: 3px 5px; font-size: 9.5px; cursor: pointer; }
+    .actor-tag { 
+      color: #0284c7; 
+      font-weight: bold; 
+      cursor: pointer; 
+      text-decoration: underline; 
+      display: inline-block; 
+    }
+    .future-ticket .actor-tag { color: #047857; }
+    
+    .delete-btn { background: #ef4444; color: white; border: none; border-radius: 4px; padding: 4px 6px; font-size: 9.5px; cursor: pointer; }
 
-    /* 📍 좌석 배치도 스타일 개선 (세로 일자 통로 적용) */
     .seat-map-wrapper {
       margin-top: 15px;
       padding-top: 12px;
@@ -259,7 +305,6 @@
     .seat-section { display: flex; flex-direction: column; gap: 3px; width: 100%; min-width: 320px; }
     .aisle-gap { height: 14px; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; font-weight: bold; color: #0284c7; font-size: 8.5px; }
 
-    /* 💡 좌/우 블록을 고정 폭 그리드로 일자 정렬 */
     .seat-row { display: flex; justify-content: center; align-items: center; width: 100%; gap: 12px; }
     .seat-block { display: flex; gap: 1px; min-width: 150px; }
     .seat-block.left-block { justify-content: flex-end; }
@@ -317,7 +362,7 @@
     <div class="form-grid">
       <div class="form-group full-width">
         <label>관람 일시 (스케줄 클릭 시 자동입력)</label>
-        <input type="text" id="playDate" placeholder="예: 7월 23일 (목) 20:00">
+        <input type="text" id="playDate" placeholder="예: 7/23 (목) 20:00">
       </div>
 
       <div class="form-group full-width">
@@ -335,9 +380,11 @@
       <div class="form-group">
         <label>할인 권종</label>
         <select id="discount" onchange="calculatePrice()">
-          <option value="0.5">프리뷰 할인 / 50%</option>
           <option value="1.0">일반 (정가)</option>
+          <option value="0.5">프리뷰 할인 / 50%</option>
           <option value="0.7">조기예매 / 30%</option>
+          <option value="0.6">타임세일 / 40%</option>
+          <option value="0.5">타임세일 / 50%</option>
           <option value="0.9">SNS 팔로우 / 10%</option>
           <option value="0.85">NEP 할인 / 15%</option>
           <option value="0.75">재관람 / 25%</option>
@@ -560,6 +607,28 @@
       alert(`🎵 넘버: [${songName}]`);
     }
 
+    // 날짜 텍스트를 Date 타임스탬프(숫자)로 파싱하는 함수
+    function parseDateToTimestamp(dateStr) {
+      if (!dateStr || dateStr === '날짜 미지정') return 0;
+      const match = dateStr.match(/(\d+)\/(\d+)\s*\([^)]+\)\s*(\d+):(\d+)/);
+      if (!match) return 0;
+      
+      const month = parseInt(match[1], 10);
+      const day = parseInt(match[2], 10);
+      const hour = parseInt(match[3], 10);
+      const minute = parseInt(match[4], 10);
+      
+      const now = new Date();
+      return new Date(now.getFullYear(), month - 1, day, hour, minute).getTime();
+    }
+
+    // 미래 회차 판별 함수
+    function isFutureDate(dateStr) {
+      const timestamp = parseDateToTimestamp(dateStr);
+      if (timestamp === 0) return false;
+      return timestamp > Date.now();
+    }
+
     function renderScheduleTable() {
       const tbody = document.getElementById('scheduleTableBody');
       tbody.innerHTML = '';
@@ -599,7 +668,8 @@
 
       displaySchedule.forEach((item) => {
         const tr = document.createElement('tr');
-        
+        const fullDateStr = `${item.date} (${item.day}) ${item.time}`;
+
         let mTag = item.millerNote === '첫공' ? '<span class="tag-badge tag-cheotgong">첫공</span>' : (item.millerNote === '막공' ? '<span class="tag-badge tag-makgong">막공</span>' : '');
         let gTag = item.gregorioNote === '첫공' ? '<span class="tag-badge tag-cheotgong">첫공</span>' : (item.gregorioNote === '막공' ? '<span class="tag-badge tag-makgong">막공</span>' : '');
 
@@ -627,7 +697,7 @@
           document.querySelectorAll('.schedule-table tr').forEach(r => r.classList.remove('selected-schedule'));
           tr.classList.add('selected-schedule');
 
-          document.getElementById('playDate').value = `${item.date} (${item.day}) ${item.time}`;
+          document.getElementById('playDate').value = fullDateStr;
           selectedScheduleActors = [item.miller, item.gregorio];
         };
 
@@ -635,7 +705,6 @@
       });
     }
 
-    /* 💡 배치도 일직선 통로 구현 */
     function renderSeatMap() {
       const mapEl = document.getElementById('seatMap');
       mapEl.innerHTML = '';
@@ -656,7 +725,6 @@
         label.innerText = item.row;
         rowDiv.appendChild(label);
 
-        // 왼쪽 블록 (우측 정렬로 통로선 일직선 맞춤)
         const leftBlock = document.createElement('div');
         leftBlock.className = 'seat-block left-block';
         for (let n = item.left[0]; n <= item.left[1]; n++) {
@@ -664,7 +732,6 @@
         }
         rowDiv.appendChild(leftBlock);
 
-        // 오른쪽 블록 (좌측 정렬로 통로선 일직선 맞춤)
         if (item.right) {
           const rightBlock = document.createElement('div');
           rightBlock.className = 'seat-block right-block';
@@ -729,13 +796,14 @@
         seatId: detail,
         price: price,
         actors: finalActors,
-        status: '' // 기본 공백 값
+        status: ''
       };
 
       tickets.push(newTicket);
       saveData();
 
       document.getElementById('seatDetail').value = '';
+      
       render();
     }
 
@@ -803,6 +871,18 @@
             return t.actor ? t.actor.includes(currentFilter) : false;
           });
 
+      // 📌 [핵심 기능] 관극 목록을 날짜 순서대로(오름차순) 자동 정렬
+      filteredTickets.sort((a, b) => {
+        const timeA = parseDateToTimestamp(a.date);
+        const timeB = parseDateToTimestamp(b.date);
+        
+        if (timeA === 0 && timeB === 0) return 0;
+        if (timeA === 0) return 1; // 날짜 미지정 항목은 맨 뒤로 이동
+        if (timeB === 0) return -1;
+        
+        return timeA - timeB; // 빠른 날짜가 위로 오도록 정렬
+      });
+
       const seatCounts = {};
       filteredTickets.forEach(t => {
         seatCounts[t.seatId] = (seatCounts[t.seatId] || 0) + 1;
@@ -839,16 +919,17 @@
       filteredTickets.forEach(t => {
         const li = document.createElement('li');
         
+        if (isFutureDate(t.date)) {
+          li.classList.add('future-ticket');
+        }
+        
         let actorArr = t.actors || (t.actor ? [t.actor] : []);
         let actorsHtml = actorArr.map(actName => {
-          const isPinned = pinnedList.includes(actName);
-          const pinIcon = isPinned ? '📌' : '📍';
-          return `<span class="actor-tag" onclick="filterActor('${actName}')">${actName}</span><button class="pin-btn" onclick="togglePin('${actName}')" style="background:none;border:none;cursor:pointer;padding:0 1px;">${pinIcon}</button>`;
+          return `<span class="actor-tag" onclick="filterActor('${actName}')">${actName}</span>`;
         }).join(' ');
 
         const currentStatus = t.status || '';
 
-        /* 💡 수정: 금액 -> 상태선택탭 -> 삭제버튼 순서 적용 + 공백 처리 */
         li.innerHTML = `
           <div class="ticket-info-group">
             <span class="ticket-date">[${t.date}]</span>
