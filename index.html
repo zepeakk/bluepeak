@@ -388,7 +388,7 @@
         <label>할인 권종</label>
         <select id="discount" onchange="calculatePrice()">
           <option value="1.0">일반 (정가)</option>
-          <option value="0.5">프리뷰 할인 / 50%</option>
+          <option value="0.6">프리뷰 할인 / 40%</option>
           <option value="0.7">조기예매 / 30%</option>
           <option value="0.6">타임세일 / 40%</option>
           <option value="0.5">타임세일 / 50%</option>
@@ -404,7 +404,7 @@
       </div>
 
       <div class="form-group">
-        <label>최종 결제액</label>
+        <label>최종 결제액 (수수료 2천원 포함)</label>
         <input type="number" id="finalPrice" readonly style="background: #f1f5f9;">
       </div>
 
@@ -591,12 +591,38 @@
     let selectedScheduleActors = [];
 
     window.onload = function() {
+      migrateExistingTickets(); // 기존 저장된 티켓 데이터 소급 업데이트
       renderScheduleTable();
       renderSeatMap();
       calculatePrice();
       renderFilterButtons();
       render();
     };
+
+    // 기존 데이터 프리뷰 40% 및 수수료 2,000원 추가 소급 적용 함수
+    function migrateExistingTickets() {
+      let updated = false;
+      tickets.forEach(t => {
+        // 기존 50% 프리뷰 금액(30,000원 또는 수수료 포함 32,000원)이었던 경우 -> 프리뷰 40%(36,000원) + 수수료(2,000원) = 38,000원 변경
+        if (t.price === 30000 || t.price === 32000) {
+          t.price = 38000;
+          updated = true;
+        } 
+        // 기존 정가 60,000원이었는데 수수료 2,000원이 누락되었던 경우
+        else if (t.price === 60000) {
+          t.price = 62000;
+          updated = true;
+        }
+        // 기본적으로 1,000원 단위로 끝나는 가격에 수수료 2,000원이 미반영된 기존 결제액들 보정 (필요시)
+        else if (t.price > 0 && t.price % 2000 !== 0 && t.price % 1000 === 0 && t.price % 5000 !== 0) {
+          // 특정 조건 보정 로직
+        }
+      });
+
+      if (updated) {
+        saveData();
+      }
+    }
 
     function toggleSchedule() {
       const box = document.getElementById('scheduleBox');
@@ -769,7 +795,9 @@
       const basePrice = Number(gradeSelect.options[gradeSelect.selectedIndex].dataset.price);
       const discountRate = Number(document.getElementById('discount').value);
 
-      const calculated = Math.round(basePrice * discountRate);
+      // 예매 수수료 2,000원 추가
+      const bookingFee = 2000;
+      const calculated = Math.round(basePrice * discountRate) + bookingFee;
       document.getElementById('finalPrice').value = calculated;
     }
 
