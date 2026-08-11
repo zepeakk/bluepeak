@@ -31,7 +31,7 @@
     .container { 
       background: linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)), 
                   url('poster.jpg') center top / 100% auto repeat-y;
-      padding: 12px 8px; 
+      padding: 12px 6px; 
       border-radius: 16px; 
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); 
       width: 100%;
@@ -107,7 +107,7 @@
       width: 100%;
       border-collapse: separate;
       border-spacing: 0;
-      font-size: 10px;
+      font-size: 9.5px;
       text-align: center;
       table-layout: fixed;
     }
@@ -118,33 +118,37 @@
       z-index: 10;
       background: #0284c7;
       color: white;
-      padding: 6px 2px;
+      padding: 6px 0px;
       font-weight: bold;
       border-bottom: 2px solid #0369a1;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      font-size: 10px;
+      font-size: 9.5px;
+      white-space: nowrap;
     }
 
     .schedule-table td {
-      padding: 6px 1px;
+      padding: 5px 0px;
       border-bottom: 1px solid #e2e8f0;
       cursor: pointer;
-      word-break: break-all;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: clip;
     }
     .schedule-table tr:hover td { background: #bae6fd !important; }
     .schedule-table tr:nth-child(even) td { background: rgba(241, 245, 249, 0.7); }
 
-    .col-date { width: 18%; }
+    /* 모바일 한 줄 유지를 위한 열 너비 재조정 */
+    .col-date { width: 17%; }
     .col-time { width: 12%; }
-    .col-miller { width: 25%; }
-    .col-greg { width: 25%; }
-    .col-evt { width: 20%; }
+    .col-miller { width: 24.5%; }
+    .col-greg { width: 24.5%; }
+    .col-evt { width: 22%; }
 
     .tag-badge {
       display: inline-block;
-      border-radius: 4px;
-      padding: 1px 3px;
-      font-size: 8px;
+      border-radius: 3px;
+      padding: 1px 2px;
+      font-size: 7.5px;
       font-weight: bold;
       margin-left: 1px;
       color: white;
@@ -159,12 +163,13 @@
 
     .event-badge {
       display: inline-block;
-      padding: 1px 3px;
-      border-radius: 4px;
-      font-size: 8px;
+      padding: 1px 2px;
+      border-radius: 3px;
+      font-size: 7.5px;
       font-weight: bold;
       cursor: pointer;
       white-space: nowrap;
+      margin-right: 1px;
     }
     .evt-curtaincall { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
     .evt-double { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
@@ -733,7 +738,6 @@
       { date: "9/27", day: "일", time: "18:00", miller: "홍나현", gregorio: "이봄소리", millerNote: "막공", gregorioNote: "막공" }
     ];
 
-    /* ★ 이미지 속 좌석 배치 정밀 설정 ★ */
     const rowConfig = [
       { row: 'A', left: [1, 12], right: [13, 24], hold: [1, 24] },
       { row: 'B', left: [1, 12], right: [13, 24], hold: [] },
@@ -860,11 +864,11 @@
         else if (item.ep === 'ep3') epHtml = '<span class="tag-badge tag-ep3">에필3</span>';
 
         let evtHtml = '';
-        if (item.evt === 'curtaincall') evtHtml = '<span class="event-badge evt-curtaincall">📷 커튼콜</span>';
-        else if (item.evt === 'double') evtHtml = '<span class="event-badge evt-double">도장 더블</span>';
-        else if (item.evt === 'special') evtHtml = `<span class="event-badge evt-special" onclick="event.stopPropagation(); showSongAlert('${item.song}')">📸 스콜</span>`;
+        if (item.evt === 'curtaincall') evtHtml = '<span class="event-badge evt-curtaincall">📷커튼콜</span>';
+        else if (item.evt === 'double') evtHtml = '<span class="event-badge evt-double">도장더블</span>';
+        else if (item.evt === 'special') evtHtml = `<span class="event-badge evt-special" onclick="event.stopPropagation(); showSongAlert('${item.song}')">📸스콜</span>`;
 
-        let infoContent = [evtHtml, epHtml].filter(Boolean).join(' ');
+        let infoContent = [evtHtml, epHtml].filter(Boolean).join('');
 
         tr.innerHTML = `
           <td class="col-date">${item.date}(${item.day})</td>
@@ -1050,7 +1054,6 @@
       renderActorCounters();
     }
 
-    /* ★ 배우 카운터 - 날짜+회차 기준 동일회차 중복 제거 ★ */
     function renderActorCounters() {
       const totalCounts = {};
       actorList.forEach(name => totalCounts[name] = 0);
@@ -1063,7 +1066,6 @@
       const myCounts = {};
       actorList.forEach(name => myCounts[name] = 0);
 
-      // 양도 제외한 티켓들을 동일 '날짜+회차' 세션별로 그룹화
       const validTickets = tickets.filter(t => t.status !== '양도');
       const sessionMap = new Map();
 
@@ -1077,7 +1079,6 @@
         list.forEach(act => actorSet.add(act));
       });
 
-      // 동일 회차당 배우별 1회 카운트
       sessionMap.forEach(actorSet => {
         actorSet.forEach(act => {
           if (myCounts[act] !== undefined) {
@@ -1114,7 +1115,6 @@
       document.getElementById('gregCounterGrid').innerHTML = gregorioActors.map(createCardHtml).join('');
     }
 
-    /* ★ 페어 카운트 - 날짜+회차 기준 동일회차 중복 제거 ★ */
     function renderPairSection() {
       const container = document.getElementById('pairGridContainer');
       container.innerHTML = '';
@@ -1141,7 +1141,6 @@
         }
       });
 
-      // 동일 '날짜+회차' 세션별 페어 관극 카운트
       const validTickets = tickets.filter(t => t.status !== '양도');
       const sessionMap = new Map();
 
@@ -1227,7 +1226,6 @@
       document.getElementById('pairModal').style.display = 'none';
     }
 
-    /* ★ 메인 렌더링 - 전체 관극 회차 수(날짜+회차) 중복 제거 반영 ★ */
     function render() {
       document.querySelectorAll('.seat').forEach(s => {
         s.classList.remove('selected-seat', 'multi-selected-seat');
@@ -1291,14 +1289,13 @@
         if (t.status !== '양도') {
           total += t.price;
           if (t.date && t.date !== '날짜 미지정') {
-            sessionSet.add(t.date); // 날짜+회차(시간) 고유값 집합
+            sessionSet.add(t.date);
           } else {
             unassignedCount++;
           }
         }
       });
 
-      // 동일 회차는 1회차로 카운트
       const totalSessions = sessionSet.size + unassignedCount;
 
       document.getElementById('totalPrice').innerText = total.toLocaleString();
@@ -1376,7 +1373,7 @@
         const image = canvas.toDataURL("image/png");
         const link = document.createElement("a");
         link.href = image;
-        link.download = "musical_cheongsaechi_settlement.png";
+        link.download = "뮤지컬청새치.png";
         link.click();
       }).catch(err => {
         alert("이미지 저장 중 오류가 발생했습니다.");
