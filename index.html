@@ -13,7 +13,6 @@
   <style>
     * { box-sizing: border-box; }
     
-    /* 포스터 이미지 전체 배경 반복(repeat-y) 설정 */
     html {
       min-height: 100%;
       background: url('poster.jpg') center top / 100% auto repeat-y;
@@ -29,7 +28,6 @@
       min-height: 100vh;
     }
 
-    /* 컨테이너 및 배경 설정 */
     .container { 
       background: linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)), 
                   url('poster.jpg') center top / 100% auto repeat-y;
@@ -258,7 +256,6 @@
     .actor-tag { color: #0284c7; font-weight: bold; cursor: pointer; text-decoration: underline; display: inline-block; white-space: nowrap !important; }
     .delete-btn { background: #ef4444; color: white; border: none; border-radius: 4px; padding: 3px 5px; font-size: 9.5px; cursor: pointer; white-space: nowrap; }
 
-    /* 이미지 저장 영역 */
     .export-target-wrapper {
       margin-top: 15px;
       padding: 10px 6px;
@@ -267,31 +264,43 @@
       border: 1.5px solid #bae6fd;
     }
 
-    /* 배치도 영역 */
     .seat-map-wrapper { width: 100%; }
     .seat-map-header { text-align: center; font-weight: bold; font-size: 14px; color: #0369a1; margin-bottom: 8px; }
     .stage-box { 
       background: linear-gradient(90deg, #0284c7, #0369a1); 
       color: #fff; text-align: center; padding: 4px; font-weight: bold; 
-      border-radius: 6px; margin: 0 auto 8px auto; letter-spacing: 3px; font-size: 11px; width: 80%;
+      border-radius: 6px; margin: 0 auto 12px auto; letter-spacing: 3px; font-size: 11px; width: 80%;
     }
     
     .seat-map-container {
-      background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 10px 2px; width: 100%; overflow-x: auto;
+      background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 12px 4px; width: 100%; overflow-x: auto;
     }
 
-    .seat-section { display: flex; flex-direction: column; gap: 3px; width: 100%; min-width: 320px; }
-    .aisle-gap { height: 14px; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; font-weight: bold; color: #0284c7; font-size: 8.5px; }
+    .seat-section { display: flex; flex-direction: column; gap: 3px; width: 100%; min-width: 340px; }
+    
+    .aisle-gap { 
+      height: 22px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: flex-end; 
+      padding-right: 35px; 
+      font-weight: bold; 
+      color: #0284c7; 
+      font-size: 9px; 
+      letter-spacing: 1px;
+    }
 
-    .seat-row { display: flex; justify-content: center; align-items: center; width: 100%; gap: 10px; }
-    .seat-block { display: flex; gap: 1px; }
+    .seat-row { display: flex; justify-content: center; align-items: center; width: 100%; }
+    .seat-block { display: flex; gap: 1px; width: 156px; }
     .seat-block.left-block { justify-content: flex-end; }
     .seat-block.right-block { justify-content: flex-start; }
 
-    .row-label { font-size: 9px; font-weight: bold; width: 10px; text-align: center; color: #0369a1; flex-shrink: 0; }
+    .center-aisle { width: 20px; flex-shrink: 0; }
+
+    .row-label { font-size: 9px; font-weight: bold; width: 14px; text-align: center; color: #0369a1; flex-shrink: 0; }
     
     .seat { 
-      width: 10px; height: 11px; 
+      width: 10.5px; height: 11.5px; 
       background: #7dd3fc; border: 0.5px solid #38bdf8; border-radius: 1.5px; 
       display: inline-flex; align-items: center; justify-content: center; 
       font-size: 5.5px; font-weight: bold; cursor: pointer; color: #0f172a;
@@ -306,14 +315,11 @@
     .seat.selected-seat { background: #ef4444 !important; color: white !important; border-color: #b91c1c !important; }
     .seat.multi-selected-seat { background: #f59e0b !important; color: white !important; border-color: #d97706 !important; }
 
-    .seat-legend { display: flex; justify-content: center; gap: 6px; font-size: 9.5px; margin-bottom: 6px; flex-wrap: wrap; }
+    .seat-legend { display: flex; justify-content: center; gap: 6px; font-size: 9.5px; margin-bottom: 8px; flex-wrap: wrap; }
     .legend-item { display: flex; align-items: center; gap: 2px; }
     .legend-box { width: 9px; height: 9px; border-radius: 2px; }
 
-    /* 배우별 관람 카운터 */
-    .actor-counter-wrapper {
-      margin-top: 12px;
-    }
+    .actor-counter-wrapper { margin-top: 12px; }
     .counter-role-title {
       font-size: 11px;
       font-weight: bold;
@@ -324,20 +330,9 @@
       gap: 4px;
     }
     
-    .counter-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 5px;
-    }
-
-    .counter-grid.center-grid {
-      display: flex;
-      justify-content: center;
-      gap: 5px;
-    }
-    .counter-grid.center-grid .actor-card {
-      width: calc(25% - 4px);
-    }
+    .counter-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+    .counter-grid.center-grid { display: flex; justify-content: center; gap: 5px; }
+    .counter-grid.center-grid .actor-card { width: calc(25% - 4px); }
 
     .actor-card {
       position: relative;
@@ -354,198 +349,69 @@
 
     .actor-card-img {
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      object-position: top center;
-      z-index: 1;
-      -webkit-user-drag: none;
-      user-select: none;
-      pointer-events: auto;
+      top: 0; left: 0; width: 100%; height: 100%;
+      object-fit: cover; object-position: top center;
+      z-index: 1; -webkit-user-drag: none; user-select: none; pointer-events: auto;
     }
 
-    .actor-card-img.img-lee-jiyeon-1 {
-      object-position: center 5%;
-    }
+    .actor-card-img.img-lee-jiyeon-1 { object-position: center 5%; }
 
     .actor-card-overlay {
-      position: absolute;
-      bottom: 0; left: 0;
-      width: 100%; height: 50%;
+      position: absolute; bottom: 0; left: 0; width: 100%; height: 50%;
       background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 100%);
-      z-index: 2;
-      pointer-events: none;
+      z-index: 2; pointer-events: none;
     }
 
     .actor-card-info {
-      position: absolute;
-      bottom: 6px; left: 0; width: 100%;
-      z-index: 10;
-      text-align: center;
-      color: #ffffff;
-      padding: 0 2px;
-      pointer-events: none;
+      position: absolute; bottom: 6px; left: 0; width: 100%;
+      z-index: 10; text-align: center; color: #ffffff; padding: 0 2px; pointer-events: none;
     }
 
     .actor-card-name {
       font-family: 'Gmarket Sans', 'Noto Sans KR', sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-      margin-bottom: 1px;
-      white-space: nowrap;
-      color: #ffffff;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+      font-size: 11px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 1px; white-space: nowrap; color: #ffffff; text-shadow: 0 1px 4px rgba(0,0,0,0.9);
     }
 
     .actor-card-count {
       font-family: 'Playfair Display', Georgia, serif;
-      font-size: 10.5px;
-      font-weight: 700;
-      white-space: nowrap;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.9);
-      color: #ffffff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 14px;
+      font-size: 10.5px; font-weight: 700; white-space: nowrap; text-shadow: 0 1px 4px rgba(0,0,0,0.9); color: #ffffff; display: flex; justify-content: center; align-items: center; height: 14px;
     }
 
-    .my-count-sky {
-      color: #38bdf8;
-      font-size: 11px;
-      font-weight: 700;
-      transform: translateY(-1.5px);
-      display: inline-block;
-    }
+    .my-count-sky { color: #38bdf8; font-size: 11px; font-weight: 700; transform: translateY(-1.5px); display: inline-block; }
+    .count-slash { font-size: 9px; color: #ffffff; margin: 0 1.5px; font-style: italic; opacity: 0.8; }
+    .total-count-white { color: #ffffff; font-size: 11px; font-weight: 700; transform: translateY(1.5px); display: inline-block; }
 
-    .count-slash {
-      font-size: 9px;
-      color: #ffffff;
-      margin: 0 1.5px;
-      font-style: italic;
-      opacity: 0.8;
-    }
-
-    .total-count-white {
-      color: #ffffff;
-      font-size: 11px;
-      font-weight: 700;
-      transform: translateY(1.5px);
-      display: inline-block;
-    }
-
-    .outer-button-container {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 14px;
-      padding: 0 4px;
-    }
+    .outer-button-container { display: flex; justify-content: flex-end; margin-top: 14px; padding: 0 4px; }
 
     .export-small-btn {
-      padding: 9px 16px;
-      background-color: #0f172a;
-      color: #ffffff;
-      border: 1.5px solid #38bdf8;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: all 0.2s ease;
+      padding: 9px 16px; background-color: #0f172a; color: #ffffff; border: 1.5px solid #38bdf8; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); display: flex; align-items: center; gap: 5px; transition: all 0.2s ease;
     }
     
-    .export-small-btn:hover {
-      background-color: #1e293b;
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
-      transform: translateY(-1px);
-    }
+    .export-small-btn:hover { background-color: #1e293b; box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4); transform: translateY(-1px); }
+    .export-small-btn:active { transform: scale(0.96); }
 
-    .export-small-btn:active {
-      transform: scale(0.96);
-    }
-
-    /* --- 페어횟수 참고 영역 CSS --- */
     .pair-section-wrapper {
-      margin-top: 18px;
-      padding: 12px 10px;
-      background: rgba(255, 255, 255, 0.92);
-      border: 1px solid #cbd5e1;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin-top: 18px; padding: 12px 10px; background: rgba(255, 255, 255, 0.92); border: 1px solid #cbd5e1; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
-    .pair-section-title {
-      font-weight: bold;
-      font-size: 12px;
-      color: #0369a1;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-
-    .pair-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-    }
+    .pair-section-title { font-weight: bold; font-size: 12px; color: #0369a1; margin-bottom: 10px; text-align: center; }
+    .pair-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
 
     .pair-card {
-      background: #f8fafc;
-      border: 1px solid #bae6fd;
-      border-radius: 8px;
-      padding: 6px 2px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.15s ease;
+      background: #f8fafc; border: 1px solid #bae6fd; border-radius: 8px; padding: 6px 2px; text-align: center; cursor: pointer; transition: all 0.15s ease;
     }
 
-    .pair-card:hover {
-      background: #e0f2fe;
-      transform: translateY(-2px);
-      border-color: #0284c7;
-    }
-
-    .pair-card-name {
-      font-size: 11px;
-      font-weight: bold;
-      color: #0284c7;
-      margin-bottom: 2px;
-    }
-
-    .pair-card-count {
-      font-size: 10px;
-      color: #334155;
-      font-weight: bold;
-    }
-
+    .pair-card:hover { background: #e0f2fe; transform: translateY(-2px); border-color: #0284c7; }
+    .pair-card-name { font-size: 11px; font-weight: bold; color: #0284c7; margin-bottom: 2px; }
+    .pair-card-count { font-size: 10px; color: #334155; font-weight: bold; }
     .pair-card-count .my-pcount { color: #0284c7; }
 
-    /* 팝업 모달 스티일 */
     .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(15, 23, 42, 0.6);
-      z-index: 9999;
-      justify-content: center;
-      align-items: center;
-      padding: 12px;
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); z-index: 9999; justify-content: center; align-items: center; padding: 12px;
     }
 
     .modal-box {
-      background: #ffffff;
-      border-radius: 14px;
-      width: 100%;
-      max-width: 400px;
-      max-height: 80vh;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      overflow: hidden;
-      animation: modalFadeIn 0.2s ease-out;
+      background: #ffffff; border-radius: 14px; width: 100%; max-width: 400px; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.3); overflow: hidden; animation: modalFadeIn 0.2s ease-out;
     }
 
     @keyframes modalFadeIn {
@@ -553,52 +419,14 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .modal-header {
-      background: #0284c7;
-      color: white;
-      padding: 10px 14px;
-      font-weight: bold;
-      font-size: 13px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    .modal-header { background: #0284c7; color: white; padding: 10px 14px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+    .modal-close-btn { background: none; border: none; color: white; font-size: 16px; cursor: pointer; font-weight: bold; }
+    .modal-body { padding: 10px; overflow-y: auto; font-size: 11px; }
 
-    .modal-close-btn {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .modal-body {
-      padding: 10px;
-      overflow-y: auto;
-      font-size: 11px;
-    }
-
-    .modal-schedule-item {
-      padding: 8px 10px;
-      border-bottom: 1px solid #f1f5f9;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .modal-schedule-item.past {
-      color: #94a3b8; /* 지나간 회차: 회색 */
-    }
-
-    .modal-schedule-item.future {
-      color: #0f172a; /* 남은 회차: 검은색 */
-      font-weight: bold;
-    }
-
-    .modal-schedule-item .item-tags {
-      font-size: 9px;
-    }
+    .modal-schedule-item { padding: 8px 10px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
+    .modal-schedule-item.past { color: #94a3b8; }
+    .modal-schedule-item.future { color: #0f172a; font-weight: bold; }
+    .modal-schedule-item .item-tags { font-size: 9px; }
   </style>
 </head>
 <body>
@@ -718,8 +546,8 @@
         <div class="stage-box">STAGE</div>
         
         <div class="seat-legend">
-          <div class="legend-item"><div class="legend-box" style="background:#7dd3fc;"></div> 일반석</div>
-          <div class="legend-item"><div class="legend-box" style="background:#94a3b8;"></div> 보류석</div>
+          <div class="legend-item"><div class="legend-box" style="background:#7dd3fc;"></div> 판매석</div>
+          <div class="legend-item"><div class="legend-box" style="background:#94a3b8;"></div> 판매보류석</div>
           <div class="legend-item"><div class="legend-box" style="background:#ef4444;"></div> 1회 관람</div>
           <div class="legend-item"><div class="legend-box" style="background:#f59e0b;"></div> 2회 이상 관람</div>
         </div>
@@ -745,7 +573,7 @@
     <button class="export-small-btn" onclick="exportToImage()">정산판 저장</button>
   </div>
 
-  <!-- 페어횟수 참고 영역 (정산판 저장 아래) -->
+  <!-- 페어횟수 참고 영역 -->
   <div class="pair-section-wrapper">
     <div class="pair-section-title">&lt; 페어횟수 참고 &gt;</div>
     <div class="pair-grid" id="pairGridContainer"></div>
@@ -768,7 +596,6 @@
     const millerActors = ["김서연", "이지연", "전민지", "홍나현"];
     const gregorioActors = ["김경민", "박슬기", "이봄소리"];
 
-    // 줄임말 매핑
     const actorNicknames = {
       "김서연": "션",
       "이지연": "젼",
@@ -906,17 +733,18 @@
       { date: "9/27", day: "일", time: "18:00", miller: "홍나현", gregorio: "이봄소리", millerNote: "막공", gregorioNote: "막공" }
     ];
 
+    /* ★ 이미지 속 좌석 배치 정밀 설정 ★ */
     const rowConfig = [
-      { row: 'A', left: [1,12], right: [13,24], hold: [1, 24] },
-      { row: 'B', left: [1,12], right: [13,24], hold: [1, 24] },
-      { row: 'C', left: [1,13], right: [14,25], hold: [] },
-      { row: 'D', left: [1,13], right: [14,25], hold: [] },
-      { row: 'E', left: [1,13], right: [14,25], hold: [] },
-      { row: 'F', left: [1,13], right: [14,20], hold: [] },
-      { row: 'G', left: [1,12], right: [13,24], hold: [] },
-      { row: 'H', left: [1,12], right: [13,24], hold: [] },
-      { row: 'I', left: [1,13], right: [14,25], hold: [1, 2, 3, 22, 23, 24, 25] },
-      { row: 'J', left: [1,9], right: [10,17], hold: [] }
+      { row: 'A', left: [1, 12], right: [13, 24], hold: [1, 24] },
+      { row: 'B', left: [1, 12], right: [13, 24], hold: [] },
+      { row: 'C', left: [1, 13], right: [14, 25], hold: [] },
+      { row: 'D', left: [1, 13], right: [14, 25], hold: [] },
+      { row: 'E', left: [1, 13], right: [14, 25], hold: [] },
+      { row: 'F', left: [1, 13], right: [14, 20], hold: [] },
+      { row: 'G', left: [1, 12], right: [13, 24], hold: [] },
+      { row: 'H', left: [1, 12], right: [13, 24], hold: [] },
+      { row: 'I', left: [1, 13], right: [14, 25], hold: [1, 2, 3, 22, 23, 24, 25] },
+      { row: 'J', left: [1, 9], right: [10, 17], hold: [] }
     ];
 
     let tickets = JSON.parse(localStorage.getItem('my_tickets')) || [];
@@ -1066,7 +894,7 @@
         if (item.row === 'F') {
           const aisle = document.createElement('div');
           aisle.className = 'aisle-gap';
-          aisle.innerHTML = 'EXIT ▶';
+          aisle.innerHTML = 'EXIT';
           mapEl.appendChild(aisle);
         }
 
@@ -1085,14 +913,18 @@
         }
         rowDiv.appendChild(leftBlock);
 
+        const centerAisle = document.createElement('div');
+        centerAisle.className = 'center-aisle';
+        rowDiv.appendChild(centerAisle);
+
+        const rightBlock = document.createElement('div');
+        rightBlock.className = 'seat-block right-block';
         if (item.right) {
-          const rightBlock = document.createElement('div');
-          rightBlock.className = 'seat-block right-block';
           for (let n = item.right[0]; n <= item.right[1]; n++) {
             rightBlock.appendChild(createSeatElement(item.row, n, item.hold.includes(n)));
           }
-          rowDiv.appendChild(rightBlock);
         }
+        rowDiv.appendChild(rightBlock);
 
         mapEl.appendChild(rowDiv);
       });
@@ -1269,12 +1101,10 @@
       document.getElementById('gregCounterGrid').innerHTML = gregorioActors.map(createCardHtml).join('');
     }
 
-    /* 페어 카운트 및 팝업 랜더링 */
     function renderPairSection() {
       const container = document.getElementById('pairGridContainer');
       container.innerHTML = '';
 
-      // 가능한 모든 페어 조합 생성 (밀러 x 그레고리오)
       const pairMap = {};
       millerActors.forEach(m => {
         gregorioActors.forEach(g => {
@@ -1290,7 +1120,6 @@
         });
       });
 
-      // 전체 회차 기준 계산
       fullSchedule.forEach(s => {
         const key = `${s.miller}_${s.gregorio}`;
         if (pairMap[key]) {
@@ -1298,7 +1127,6 @@
         }
       });
 
-      // 내 관람 회차 기준 계산 (양도 제외)
       tickets.forEach(t => {
         if (t.status !== '양도' && t.actors && t.actors.length === 2) {
           let m = t.actors.find(a => millerActors.includes(a));
@@ -1312,7 +1140,6 @@
         }
       });
 
-      // UI 랜더링
       Object.keys(pairMap).forEach(key => {
         const item = pairMap[key];
         const card = document.createElement('div');
