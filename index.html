@@ -4,26 +4,40 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>뮤지컬 청새치 - 관극 정산</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- 구글 폰트 로드 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gmarket+Sans:wght@700&family=Playfair+Display:ital,wght@0,700;1,700&family=Noto+Sans+KR:wght@700;900&display=swap" rel="stylesheet">
+  
   <style>
     * { box-sizing: border-box; }
-    html, body {
-      overflow-x: hidden;
+    
+    /* 포스터 이미지 전체 배경 반복(repeat-y) 설정 */
+    html {
+      min-height: 100%;
+      background: url('poster.jpg') center top / 100% auto repeat-y;
+      background-attachment: scroll;
     }
     body { 
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-      padding: 6px 2px; 
+      padding: 6px 4px 60px 4px;
       max-width: 600px; 
       margin: 0 auto; 
       color: #2c3e50; 
-      background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+      background: transparent;
       min-height: 100vh;
     }
+
+    /* 컨테이너 및 배경 설정 */
     .container { 
-      background: rgba(255, 255, 255, 0.98); 
-      padding: 10px 4px; 
+      background: linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)), 
+                  url('poster.jpg') center top / 100% auto repeat-y;
+      padding: 12px 8px; 
       border-radius: 16px; 
-      box-shadow: 0 8px 20px rgba(14, 116, 144, 0.15); 
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); 
       width: 100%;
+      position: relative;
     }
 
     .title-image-wrapper {
@@ -45,23 +59,19 @@
       filter: drop-shadow(0 3px 5px rgba(2, 132, 199, 0.2));
       -webkit-user-drag: none;
       user-select: none;
-      -webkit-touch-callout: none;
       pointer-events: none;
     }
 
     .title-image-cover {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0; width: 100%; height: 100%;
       z-index: 10;
       background: rgba(0,0,0,0);
     }
 
     .contact-info {
-      font-size: 5px;
-      color: #888888;
+      font-size: 8px;
+      color: #64748b;
       margin-top: 4px;
       position: relative;
       z-index: 20;
@@ -70,7 +80,7 @@
     .schedule-toggle-btn {
       width: 100%;
       padding: 8px 10px;
-      background: #e0f2fe;
+      background: rgba(224, 242, 254, 0.9);
       color: #0369a1;
       border: 1px solid #bae6fd;
       border-radius: 8px;
@@ -84,7 +94,7 @@
     }
 
     .schedule-container {
-      background: #f8fafc;
+      background: rgba(248, 250, 252, 0.95);
       border: 1px solid #cbd5e1;
       border-radius: 10px;
       margin-bottom: 12px;
@@ -124,7 +134,7 @@
       word-break: break-all;
     }
     .schedule-table tr:hover td { background: #bae6fd !important; }
-    .schedule-table tr:nth-child(even) td { background: #f1f5f9; }
+    .schedule-table tr:nth-child(even) td { background: rgba(241, 245, 249, 0.7); }
 
     .col-date { width: 18%; }
     .col-time { width: 12%; }
@@ -145,7 +155,6 @@
     }
     .tag-cheotgong { background: #0284c7; }
     .tag-makgong { background: #ef4444; }
-
     .tag-ep1 { background: #10b981; }
     .tag-ep2 { background: #f59e0b; }
     .tag-ep3 { background: #8b5cf6; }
@@ -181,7 +190,7 @@
       font-size: 11px; 
       outline: none; 
       width: 100%; 
-      max-width: 100%; 
+      background: rgba(255, 255, 255, 0.9);
     }
     
     .actor-box { display: flex; gap: 4px; align-items: center; width: 100%; }
@@ -208,14 +217,14 @@
       margin-top: 4px; box-shadow: 0 3px 8px rgba(2, 132, 199, 0.25);
     }
 
-    .pinned-section { margin-top: 10px; padding: 6px 8px; background: #f0f9ff; border-radius: 8px; border: 1px solid #e0f2fe; font-size: 11px; }
+    .pinned-section { margin-top: 10px; padding: 6px 8px; background: rgba(240, 249, 255, 0.85); border-radius: 8px; border: 1px solid #e0f2fe; font-size: 11px; }
     .pin-badge { display: inline-block; background: #0284c7; color: white; padding: 1px 6px; border-radius: 8px; margin-right: 3px; font-size: 10px; margin-top: 2px; white-space: nowrap; }
 
     .filter-section { margin-top: 10px; margin-bottom: 6px; font-size: 11px; }
     .filter-btn { padding: 3px 6px; margin-right: 2px; background: #e2e8f0; border: none; border-radius: 4px; cursor: pointer; font-size: 10px; margin-bottom: 3px; white-space: nowrap; }
     .filter-btn.active { background: #0284c7; color: white; font-weight: bold; }
 
-    .result { margin-top: 10px; padding: 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; }
+    .result { margin-top: 10px; padding: 10px; background: rgba(248, 250, 252, 0.9); border: 1px solid #e2e8f0; border-radius: 10px; }
     .result h3 { margin: 0 0 4px 0; font-size: 14px; color: #0f172a; }
     .result h4 { margin: 0 0 6px 0; font-size: 12px; color: #334155; }
     ul { list-style: none; padding-left: 0; margin-bottom: 0; }
@@ -238,66 +247,28 @@
       padding-left: 6px;
     }
     
-    .ticket-info-group {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      flex: 1;
-      min-width: 0;
-      flex-wrap: nowrap;
-    }
-
+    .ticket-info-group { display: flex; align-items: center; gap: 4px; flex: 1; min-width: 0; }
     .ticket-date { color: #64748b; font-size: 10px; white-space: nowrap; font-weight: bold; flex-shrink: 0; }
     .future-ticket .ticket-date { color: #065f46; } 
-    
     .ticket-seat { font-weight: bold; white-space: nowrap; flex-shrink: 0; }
-    
-    .ticket-actors { 
-      display: flex; 
-      align-items: center; 
-      gap: 3px; 
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
+    .ticket-actors { display: flex; align-items: center; gap: 3px; white-space: nowrap; flex-shrink: 0; }
 
-    .ticket-action-group {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      flex-shrink: 0; 
-      margin-left: auto;
-    }
-
-    .status-select {
-      padding: 1px 0px;
-      font-size: 9px;
-      border: 1px solid #cbd5e1;
-      border-radius: 4px;
-      background: #ffffff;
-      cursor: pointer;
-      width: 38px;
-      text-align: center;
-    }
-
-    .actor-tag { 
-      color: #0284c7; 
-      font-weight: bold; 
-      cursor: pointer; 
-      text-decoration: underline; 
-      display: inline-block; 
-      white-space: nowrap !important;
-      word-break: keep-all !important;
-    }
-    .future-ticket .actor-tag { color: #047857; }
-    
+    .ticket-action-group { display: flex; align-items: center; gap: 4px; flex-shrink: 0; margin-left: auto; }
+    .status-select { padding: 1px 0px; font-size: 9px; border: 1px solid #cbd5e1; border-radius: 4px; background: #ffffff; cursor: pointer; width: 38px; text-align: center; }
+    .actor-tag { color: #0284c7; font-weight: bold; cursor: pointer; text-decoration: underline; display: inline-block; white-space: nowrap !important; }
     .delete-btn { background: #ef4444; color: white; border: none; border-radius: 4px; padding: 3px 5px; font-size: 9.5px; cursor: pointer; white-space: nowrap; }
 
-    .seat-map-wrapper {
+    /* 이미지 저장 영역 */
+    .export-target-wrapper {
       margin-top: 15px;
-      padding-top: 12px;
-      border-top: 2px dashed #cbd5e1;
-      width: 100%;
+      padding: 10px 6px;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1.5px solid #bae6fd;
     }
+
+    /* 배치도 영역 */
+    .seat-map-wrapper { width: 100%; }
     .seat-map-header { text-align: center; font-weight: bold; font-size: 14px; color: #0369a1; margin-bottom: 8px; }
     .stage-box { 
       background: linear-gradient(90deg, #0284c7, #0369a1); 
@@ -306,25 +277,29 @@
     }
     
     .seat-map-container {
-      background: #f0f9ff; border: 1.5px solid #bae6fd; border-radius: 10px; padding: 10px 4px; width: 100%; overflow-x: auto;
+      background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 10px 2px; width: 100%; overflow-x: auto;
     }
 
     .seat-section { display: flex; flex-direction: column; gap: 3px; width: 100%; min-width: 320px; }
     .aisle-gap { height: 14px; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; font-weight: bold; color: #0284c7; font-size: 8.5px; }
 
-    .seat-row { display: flex; justify-content: center; align-items: center; width: 100%; gap: 12px; }
-    .seat-block { display: flex; gap: 1px; min-width: 150px; }
+    .seat-row { display: flex; justify-content: center; align-items: center; width: 100%; gap: 10px; }
+    .seat-block { display: flex; gap: 1px; }
     .seat-block.left-block { justify-content: flex-end; }
     .seat-block.right-block { justify-content: flex-start; }
 
-    .row-label { font-size: 9px; font-weight: bold; width: 12px; text-align: center; color: #0369a1; flex-shrink: 0; }
+    .row-label { font-size: 9px; font-weight: bold; width: 10px; text-align: center; color: #0369a1; flex-shrink: 0; }
     
     .seat { 
-      width: 10.5px; height: 12px; 
+      width: 10px; height: 11px; 
       background: #7dd3fc; border: 0.5px solid #38bdf8; border-radius: 1.5px; 
-      display: flex; align-items: center; justify-content: center; 
-      font-size: 6px; font-weight: bold; cursor: pointer; color: #0f172a;
+      display: inline-flex; align-items: center; justify-content: center; 
+      font-size: 5.5px; font-weight: bold; cursor: pointer; color: #0f172a;
       flex-shrink: 0;
+      line-height: 11px;
+      text-align: center;
+      padding: 0;
+      margin: 0;
     }
     
     .seat.hold-seat { background: #94a3b8; border-color: #64748b; color: white; }
@@ -334,16 +309,306 @@
     .seat-legend { display: flex; justify-content: center; gap: 6px; font-size: 9.5px; margin-bottom: 6px; flex-wrap: wrap; }
     .legend-item { display: flex; align-items: center; gap: 2px; }
     .legend-box { width: 9px; height: 9px; border-radius: 2px; }
+
+    /* 배우별 관람 카운터 */
+    .actor-counter-wrapper {
+      margin-top: 12px;
+    }
+    .counter-role-title {
+      font-size: 11px;
+      font-weight: bold;
+      color: #0369a1;
+      margin: 10px 0 6px 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .counter-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+    }
+
+    .counter-grid.center-grid {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+    }
+    .counter-grid.center-grid .actor-card {
+      width: calc(25% - 4px);
+    }
+
+    .actor-card {
+      position: relative;
+      width: 100%;
+      height: 125px;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid #cbd5e1;
+      background-color: #0f172a;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .actor-card-img {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      z-index: 1;
+      -webkit-user-drag: none;
+      user-select: none;
+      pointer-events: auto;
+    }
+
+    .actor-card-img.img-lee-jiyeon-1 {
+      object-position: center 5%;
+    }
+
+    .actor-card-overlay {
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 50%;
+      background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 100%);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .actor-card-info {
+      position: absolute;
+      bottom: 6px; left: 0; width: 100%;
+      z-index: 10;
+      text-align: center;
+      color: #ffffff;
+      padding: 0 2px;
+      pointer-events: none;
+    }
+
+    .actor-card-name {
+      font-family: 'Gmarket Sans', 'Noto Sans KR', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 1px;
+      white-space: nowrap;
+      color: #ffffff;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+    }
+
+    .actor-card-count {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 10.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 14px;
+    }
+
+    .my-count-sky {
+      color: #38bdf8;
+      font-size: 11px;
+      font-weight: 700;
+      transform: translateY(-1.5px);
+      display: inline-block;
+    }
+
+    .count-slash {
+      font-size: 9px;
+      color: #ffffff;
+      margin: 0 1.5px;
+      font-style: italic;
+      opacity: 0.8;
+    }
+
+    .total-count-white {
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      transform: translateY(1.5px);
+      display: inline-block;
+    }
+
+    .outer-button-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 14px;
+      padding: 0 4px;
+    }
+
+    .export-small-btn {
+      padding: 9px 16px;
+      background-color: #0f172a;
+      color: #ffffff;
+      border: 1.5px solid #38bdf8;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+    
+    .export-small-btn:hover {
+      background-color: #1e293b;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .export-small-btn:active {
+      transform: scale(0.96);
+    }
+
+    /* --- 페어횟수 참고 영역 CSS --- */
+    .pair-section-wrapper {
+      margin-top: 18px;
+      padding: 12px 10px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .pair-section-title {
+      font-weight: bold;
+      font-size: 12px;
+      color: #0369a1;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .pair-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .pair-card {
+      background: #f8fafc;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      padding: 6px 2px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .pair-card:hover {
+      background: #e0f2fe;
+      transform: translateY(-2px);
+      border-color: #0284c7;
+    }
+
+    .pair-card-name {
+      font-size: 11px;
+      font-weight: bold;
+      color: #0284c7;
+      margin-bottom: 2px;
+    }
+
+    .pair-card-count {
+      font-size: 10px;
+      color: #334155;
+      font-weight: bold;
+    }
+
+    .pair-card-count .my-pcount { color: #0284c7; }
+
+    /* 팝업 모달 스티일 */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 12px;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 400px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      overflow: hidden;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-header {
+      background: #0284c7;
+      color: white;
+      padding: 10px 14px;
+      font-weight: bold;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .modal-body {
+      padding: 10px;
+      overflow-y: auto;
+      font-size: 11px;
+    }
+
+    .modal-schedule-item {
+      padding: 8px 10px;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-schedule-item.past {
+      color: #94a3b8; /* 지나간 회차: 회색 */
+    }
+
+    .modal-schedule-item.future {
+      color: #0f172a; /* 남은 회차: 검은색 */
+      font-weight: bold;
+    }
+
+    .modal-schedule-item .item-tags {
+      font-size: 9px;
+    }
   </style>
 </head>
 <body>
 
-  <div class="container">
+  <div class="container" id="mainContainer">
     
     <div class="title-image-wrapper">
       <div class="title-image-cover"></div>
       <img src="title_image.png" alt="뮤지컬 청새치 - 관극 정산" oncontextmenu="return false;" ondragstart="return false;">
-      <div class="contact-info">@hillpeakk 로 문의주세요.</div>
+      <div class="contact-info">@hillpeakk 로 문의 주세요.</div>
     </div>
 
     <button class="schedule-toggle-btn" onclick="toggleSchedule()">
@@ -405,7 +670,7 @@
 
       <div class="form-group">
         <label>최종 결제액 (수수료 2천원 포함)</label>
-        <input type="number" id="finalPrice" readonly style="background: #f1f5f9;">
+        <input type="number" id="finalPrice" readonly style="background: rgba(241, 245, 249, 0.8);">
       </div>
 
       <div class="form-group">
@@ -445,23 +710,56 @@
       <ul id="ticketList"></ul>
     </div>
 
-    <!-- 하단 배치도 -->
-    <div class="seat-map-wrapper">
-      <div class="seat-map-header">📍 배치도 (클릭 시 자동선택)</div>
-      <div class="stage-box">STAGE</div>
-      
-      <div class="seat-legend">
-        <div class="legend-item"><div class="legend-box" style="background:#7dd3fc;"></div> 일반석</div>
-        <div class="legend-item"><div class="legend-box" style="background:#94a3b8;"></div> 보류석</div>
-        <div class="legend-item"><div class="legend-box" style="background:#ef4444;"></div> 1회 관람</div>
-        <div class="legend-item"><div class="legend-box" style="background:#f59e0b;"></div> 2회 이상 관람</div>
+    <!-- 이미지 저장 영역 -->
+    <div class="export-target-wrapper" id="captureArea">
+      <!-- 배치도 -->
+      <div class="seat-map-wrapper">
+        <div class="seat-map-header">📍 좌석 배치도</div>
+        <div class="stage-box">STAGE</div>
+        
+        <div class="seat-legend">
+          <div class="legend-item"><div class="legend-box" style="background:#7dd3fc;"></div> 일반석</div>
+          <div class="legend-item"><div class="legend-box" style="background:#94a3b8;"></div> 보류석</div>
+          <div class="legend-item"><div class="legend-box" style="background:#ef4444;"></div> 1회 관람</div>
+          <div class="legend-item"><div class="legend-box" style="background:#f59e0b;"></div> 2회 이상 관람</div>
+        </div>
+
+        <div class="seat-map-container">
+          <div class="seat-section" id="seatMap"></div>
+        </div>
       </div>
 
-      <div class="seat-map-container">
-        <div class="seat-section" id="seatMap"></div>
+      <!-- 배우 카운터 -->
+      <div class="actor-counter-wrapper">
+        <div class="counter-role-title">밀러 / 루소</div>
+        <div class="counter-grid" id="millerCounterGrid"></div>
+
+        <div class="counter-role-title">그레고리오 / 에벌린</div>
+        <div class="counter-grid center-grid" id="gregCounterGrid"></div>
       </div>
     </div>
 
+  </div>
+
+  <div class="outer-button-container">
+    <button class="export-small-btn" onclick="exportToImage()">정산판 저장</button>
+  </div>
+
+  <!-- 페어횟수 참고 영역 (정산판 저장 아래) -->
+  <div class="pair-section-wrapper">
+    <div class="pair-section-title">&lt; 페어횟수 참고 &gt;</div>
+    <div class="pair-grid" id="pairGridContainer"></div>
+  </div>
+
+  <!-- 페어 스케줄 팝업 모달 -->
+  <div class="modal-overlay" id="pairModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span id="modalPairTitle">페어 스케줄</span>
+        <button class="modal-close-btn" onclick="closePairModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modalPairBody"></div>
+    </div>
   </div>
 
   <script>
@@ -469,6 +767,42 @@
 
     const millerActors = ["김서연", "이지연", "전민지", "홍나현"];
     const gregorioActors = ["김경민", "박슬기", "이봄소리"];
+
+    // 줄임말 매핑
+    const actorNicknames = {
+      "김서연": "션",
+      "이지연": "젼",
+      "전민지": "깜",
+      "홍나현": "콩",
+      "김경민": "경",
+      "박슬기": "슭",
+      "이봄소리": "봄"
+    };
+
+    const actorImages = {
+      "김서연": "actor_kim_seoyeon.jpg",
+      "이지연": "actor_lee_jiyeon.jpg",
+      "전민지": "actor_jeon_minji.jpg",
+      "홍나현": "actor_hong_nahyun.jpg",
+      "김경민": "actor_kim_gyeongmin.jpg",
+      "박슬기": "park_seulki.jpg",
+      "이봄소리": "actor_lee_bomsori.jpg"
+    };
+
+    const actorImagesToggle = {
+      "김서연": "actor_kim_seoyeon_2.jpg",
+      "이지연": "actor_lee_jiyeon_2.jpg",
+      "전민지": "actor_jeon_minji_2.jpg",
+      "홍나현": "actor_hong_nahyun_2.jpg",
+      "김경민": "actor_kim_gyeongmin_2.jpg",
+      "박슬기": "park_seulki_2.jpg",
+      "이봄소리": "actor_lee_bomsori_2.jpg"
+    };
+
+    const actorImageState = {
+      "김서연": true, "이지연": true, "전민지": true, "홍나현": true,
+      "김경민": true, "박슬기": true, "이봄소리": true
+    };
 
     const fullSchedule = [
       { date: "7/21", day: "화", time: "20:00", miller: "이지연", gregorio: "김경민", millerNote: "첫공", gregorioNote: "첫공", ep: "ep1" },
@@ -591,7 +925,7 @@
     let selectedScheduleActors = [];
 
     window.onload = function() {
-      migrateExistingTickets(); // 기존 저장된 티켓 데이터 소급 업데이트
+      migrateExistingTickets();
       renderScheduleTable();
       renderSeatMap();
       calculatePrice();
@@ -599,29 +933,18 @@
       render();
     };
 
-    // 기존 데이터 프리뷰 40% 및 수수료 2,000원 추가 소급 적용 함수
     function migrateExistingTickets() {
       let updated = false;
       tickets.forEach(t => {
-        // 기존 50% 프리뷰 금액(30,000원 또는 수수료 포함 32,000원)이었던 경우 -> 프리뷰 40%(36,000원) + 수수료(2,000원) = 38,000원 변경
         if (t.price === 30000 || t.price === 32000) {
           t.price = 38000;
           updated = true;
-        } 
-        // 기존 정가 60,000원이었는데 수수료 2,000원이 누락되었던 경우
-        else if (t.price === 60000) {
+        } else if (t.price === 60000) {
           t.price = 62000;
           updated = true;
         }
-        // 기본적으로 1,000원 단위로 끝나는 가격에 수수료 2,000원이 미반영된 기존 결제액들 보정 (필요시)
-        else if (t.price > 0 && t.price % 2000 !== 0 && t.price % 1000 === 0 && t.price % 5000 !== 0) {
-          // 특정 조건 보정 로직
-        }
       });
-
-      if (updated) {
-        saveData();
-      }
+      if (updated) saveData();
     }
 
     function toggleSchedule() {
@@ -699,7 +1022,6 @@
 
       displaySchedule.forEach((item) => {
         const tr = document.createElement('tr');
-        const fullDateStr = `${item.date} (${item.day}) ${item.time}`;
 
         let mTag = item.millerNote === '첫공' ? '<span class="tag-badge tag-cheotgong">첫공</span>' : (item.millerNote === '막공' ? '<span class="tag-badge tag-makgong">막공</span>' : '');
         let gTag = item.gregorioNote === '첫공' ? '<span class="tag-badge tag-cheotgong">첫공</span>' : (item.gregorioNote === '막공' ? '<span class="tag-badge tag-makgong">막공</span>' : '');
@@ -728,7 +1050,7 @@
           document.querySelectorAll('.schedule-table tr').forEach(r => r.classList.remove('selected-schedule'));
           tr.classList.add('selected-schedule');
 
-          document.getElementById('playDate').value = fullDateStr;
+          document.getElementById('playDate').value = `${item.date} (${item.day}) ${item.time}`;
           selectedScheduleActors = [item.miller, item.gregorio];
         };
 
@@ -795,7 +1117,6 @@
       const basePrice = Number(gradeSelect.options[gradeSelect.selectedIndex].dataset.price);
       const discountRate = Number(document.getElementById('discount').value);
 
-      // 예매 수수료 2,000원 추가
       const bookingFee = 2000;
       const calculated = Math.round(basePrice * discountRate) + bookingFee;
       document.getElementById('finalPrice').value = calculated;
@@ -891,13 +1212,168 @@
       localStorage.setItem('my_pinned', JSON.stringify(pinnedList));
     }
 
+    function toggleActorImage(actorName, event) {
+      event.stopPropagation();
+      actorImageState[actorName] = !actorImageState[actorName];
+      renderActorCounters();
+    }
+
+    function renderActorCounters() {
+      const totalCounts = {};
+      actorList.forEach(name => totalCounts[name] = 0);
+
+      fullSchedule.forEach(s => {
+        if (s.miller && totalCounts[s.miller] !== undefined) totalCounts[s.miller]++;
+        if (s.gregorio && totalCounts[s.gregorio] !== undefined) totalCounts[s.gregorio]++;
+      });
+
+      const myCounts = {};
+      actorList.forEach(name => myCounts[name] = 0);
+
+      tickets.forEach(t => {
+        if (t.status !== '양도') {
+          const list = t.actors || (t.actor ? [t.actor] : []);
+          list.forEach(act => {
+            if (myCounts[act] !== undefined) {
+              myCounts[act]++;
+            }
+          });
+        }
+      });
+
+      const createCardHtml = (actorName) => {
+        const isPrimary = actorImageState[actorName];
+        const imgPath = isPrimary ? actorImages[actorName] : actorImagesToggle[actorName];
+        const myVal = myCounts[actorName] || 0;
+        const totalVal = totalCounts[actorName] || 0;
+
+        const extraImgClass = (actorName === '이지연' && isPrimary) ? 'img-lee-jiyeon-1' : '';
+
+        return `
+          <div class="actor-card" onclick="toggleActorImage('${actorName}', event)">
+            <img class="actor-card-img ${extraImgClass}" src="${imgPath}" alt="${actorName}" oncontextmenu="return false;" ondragstart="return false;">
+            <div class="actor-card-overlay"></div>
+            <div class="actor-card-info">
+              <div class="actor-card-name">${actorName}</div>
+              <div class="actor-card-count">
+                <span class="my-count-sky">${myVal}</span>
+                <span class="count-slash">/</span>
+                <span class="total-count-white">${totalVal}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      };
+
+      document.getElementById('millerCounterGrid').innerHTML = millerActors.map(createCardHtml).join('');
+      document.getElementById('gregCounterGrid').innerHTML = gregorioActors.map(createCardHtml).join('');
+    }
+
+    /* 페어 카운트 및 팝업 랜더링 */
+    function renderPairSection() {
+      const container = document.getElementById('pairGridContainer');
+      container.innerHTML = '';
+
+      // 가능한 모든 페어 조합 생성 (밀러 x 그레고리오)
+      const pairMap = {};
+      millerActors.forEach(m => {
+        gregorioActors.forEach(g => {
+          const pairKey = `${m}_${g}`;
+          const pairName = `${actorNicknames[m]}${actorNicknames[g]}`;
+          pairMap[pairKey] = {
+            miller: m,
+            gregorio: g,
+            name: pairName,
+            total: 0,
+            myCount: 0
+          };
+        });
+      });
+
+      // 전체 회차 기준 계산
+      fullSchedule.forEach(s => {
+        const key = `${s.miller}_${s.gregorio}`;
+        if (pairMap[key]) {
+          pairMap[key].total++;
+        }
+      });
+
+      // 내 관람 회차 기준 계산 (양도 제외)
+      tickets.forEach(t => {
+        if (t.status !== '양도' && t.actors && t.actors.length === 2) {
+          let m = t.actors.find(a => millerActors.includes(a));
+          let g = t.actors.find(a => gregorioActors.includes(a));
+          if (m && g) {
+            const key = `${m}_${g}`;
+            if (pairMap[key]) {
+              pairMap[key].myCount++;
+            }
+          }
+        }
+      });
+
+      // UI 랜더링
+      Object.keys(pairMap).forEach(key => {
+        const item = pairMap[key];
+        const card = document.createElement('div');
+        card.className = 'pair-card';
+        card.innerHTML = `
+          <div class="pair-card-name">${item.name}</div>
+          <div class="pair-card-count"><span class="my-pcount">${item.myCount}</span> / ${item.total}</div>
+        `;
+        card.onclick = () => openPairModal(item.miller, item.gregorio, item.name);
+        container.appendChild(card);
+      });
+    }
+
+    function openPairModal(miller, gregorio, pairName) {
+      const modal = document.getElementById('pairModal');
+      const title = document.getElementById('modalPairTitle');
+      const body = document.getElementById('modalPairBody');
+
+      title.innerText = ` ${pairName} (${miller} x ${gregorio}) 스케줄`;
+      body.innerHTML = '';
+
+      const pairSchedules = fullSchedule.filter(s => s.miller === miller && s.gregorio === gregorio);
+
+      if (pairSchedules.length === 0) {
+        body.innerHTML = '<div style="padding: 15px; text-align: center; color:#64748b;">스케줄이 없습니다.</div>';
+      } else {
+        const now = Date.now();
+        pairSchedules.forEach(s => {
+          const fullDateStr = `${s.date} (${s.day}) ${s.time}`;
+          const timestamp = parseDateToTimestamp(fullDateStr);
+          const isPast = timestamp !== 0 && timestamp < now;
+
+          const itemDiv = document.createElement('div');
+          itemDiv.className = `modal-schedule-item ${isPast ? 'past' : 'future'}`;
+
+          let tags = [];
+          if (s.ep) tags.push(s.ep.toUpperCase());
+          if (s.evt === 'curtaincall') tags.push('커튼콜');
+          if (s.evt === 'double') tags.push('도장더블');
+          if (s.evt === 'special') tags.push('스콜');
+
+          itemDiv.innerHTML = `
+            <span>${fullDateStr}</span>
+            <span class="item-tags">${tags.length > 0 ? `[${tags.join(', ')}]` : ''}</span>
+          `;
+          body.appendChild(itemDiv);
+        });
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function closePairModal() {
+      document.getElementById('pairModal').style.display = 'none';
+    }
+
     function render() {
-      // 1. 좌석 색상 초기화
       document.querySelectorAll('.seat').forEach(s => {
         s.classList.remove('selected-seat', 'multi-selected-seat');
       });
 
-      // 2. 배우 필터링
       const filteredTickets = currentFilter === 'ALL' 
         ? tickets 
         : tickets.filter(t => {
@@ -918,16 +1394,13 @@
         return timeA - timeB;
       });
 
-      // 3. 좌석 카운트 계산 ('양도' 건은 좌석 카운트에서 제외 / '양수', '나눔'은 관람으로 카운트)
       const seatCounts = {};
-
       filteredTickets.forEach(t => {
         if (t.status !== '양도') {
           seatCounts[t.seatId] = (seatCounts[t.seatId] || 0) + 1;
         }
       });
 
-      // 4. 배치도 좌석 색상 채우기
       Object.keys(seatCounts).forEach(seatId => {
         const targetSeat = document.querySelector(`.seat[data-id="${seatId}"]`);
         if (targetSeat) {
@@ -940,7 +1413,6 @@
         }
       });
 
-      // 5. 필터 버튼 활성화 표시
       document.querySelectorAll('.filter-btn').forEach(btn => {
         if((currentFilter === 'ALL' && btn.innerText === '전체') || btn.innerText === currentFilter) {
           btn.classList.add('active');
@@ -949,7 +1421,6 @@
         }
       });
 
-      // 6. 총 정산 금액 및 관극 회차 계산 ('양도' 건은 제외)
       const listEl = document.getElementById('ticketList');
       listEl.innerHTML = '';
 
@@ -966,7 +1437,6 @@
       document.getElementById('totalPrice').innerText = total.toLocaleString();
       document.getElementById('ticketCount').innerText = validTicketCount;
 
-      // 7. 티켓 목록 리스트 출력
       filteredTickets.forEach(t => {
         const li = document.createElement('li');
         
@@ -1001,19 +1471,50 @@
         listEl.appendChild(li);
       });
 
-      // 8. 고정 배우 정보 업데이트
       const pinnedEl = document.getElementById('pinnedActors');
       if (pinnedList.length === 0) {
         pinnedEl.innerHTML = '없음';
       } else {
         pinnedEl.innerHTML = pinnedList.map(name => `<span class="pin-badge">📌 ${name}</span>`).join('');
       }
+
+      renderActorCounters();
+      renderPairSection();
     }
 
     function deleteTicket(id) {
       tickets = tickets.filter(t => t.id !== id);
       saveData();
       render();
+    }
+
+    function exportToImage() {
+      const captureArea = document.getElementById('captureArea');
+      
+      html2canvas(captureArea, {
+        scale: 4,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#ffffff",
+        onclone: (clonedDoc) => {
+          const seats = clonedDoc.querySelectorAll('.seat');
+          seats.forEach(s => {
+            s.style.display = 'flex';
+            s.style.alignItems = 'center';
+            s.style.justifyContent = 'center';
+            s.style.paddingTop = '1px';
+          });
+        }
+      }).then(canvas => {
+        const image = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = image;
+        link.download = "musical_cheongsaechi_settlement.png";
+        link.click();
+      }).catch(err => {
+        alert("이미지 저장 중 오류가 발생했습니다.");
+        console.error(err);
+      });
     }
   </script>
 
