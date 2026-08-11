@@ -1050,6 +1050,7 @@
       renderActorCounters();
     }
 
+    /* ★ 배우 카운터 - 날짜+회차 기준 동일회차 중복 제거 ★ */
     function renderActorCounters() {
       const totalCounts = {};
       actorList.forEach(name => totalCounts[name] = 0);
@@ -1062,15 +1063,27 @@
       const myCounts = {};
       actorList.forEach(name => myCounts[name] = 0);
 
-      tickets.forEach(t => {
-        if (t.status !== '양도') {
-          const list = t.actors || (t.actor ? [t.actor] : []);
-          list.forEach(act => {
-            if (myCounts[act] !== undefined) {
-              myCounts[act]++;
-            }
-          });
+      // 양도 제외한 티켓들을 동일 '날짜+회차' 세션별로 그룹화
+      const validTickets = tickets.filter(t => t.status !== '양도');
+      const sessionMap = new Map();
+
+      validTickets.forEach(t => {
+        const sessionKey = (t.date && t.date !== '날짜 미지정') ? t.date : `unassigned_${t.id}`;
+        if (!sessionMap.has(sessionKey)) {
+          sessionMap.set(sessionKey, new Set());
         }
+        const actorSet = sessionMap.get(sessionKey);
+        const list = t.actors || (t.actor ? [t.actor] : []);
+        list.forEach(act => actorSet.add(act));
+      });
+
+      // 동일 회차당 배우별 1회 카운트
+      sessionMap.forEach(actorSet => {
+        actorSet.forEach(act => {
+          if (myCounts[act] !== undefined) {
+            myCounts[act]++;
+          }
+        });
       });
 
       const createCardHtml = (actorName) => {
@@ -1101,6 +1114,7 @@
       document.getElementById('gregCounterGrid').innerHTML = gregorioActors.map(createCardHtml).join('');
     }
 
+    /* ★ 페어 카운트 - 날짜+회차 기준 동일회차 중복 제거 ★ */
     function renderPairSection() {
       const container = document.getElementById('pairGridContainer');
       container.innerHTML = '';
@@ -1127,15 +1141,32 @@
         }
       });
 
-      tickets.forEach(t => {
-        if (t.status !== '양도' && t.actors && t.actors.length === 2) {
-          let m = t.actors.find(a => millerActors.includes(a));
-          let g = t.actors.find(a => gregorioActors.includes(a));
-          if (m && g) {
-            const key = `${m}_${g}`;
-            if (pairMap[key]) {
-              pairMap[key].myCount++;
-            }
+      // 동일 '날짜+회차' 세션별 페어 관극 카운트
+      const validTickets = tickets.filter(t => t.status !== '양도');
+      const sessionMap = new Map();
+
+      validTickets.forEach(t => {
+        const sessionKey = (t.date && t.date !== '날짜 미지정') ? t.date : `unassigned_${t.id}`;
+        if (!sessionMap.has(sessionKey)) {
+          sessionMap.set(sessionKey, new Set());
+        }
+        const actorSet = sessionMap.get(sessionKey);
+        if (t.actors && t.actors.length === 2) {
+          t.actors.forEach(a => actorSet.add(a));
+        }
+      });
+
+      sessionMap.forEach(actorSet => {
+        let m = null;
+        let g = null;
+        actorSet.forEach(a => {
+          if (millerActors.includes(a)) m = a;
+          if (gregorioActors.includes(a)) g = a;
+        });
+        if (m && g) {
+          const key = `${m}_${g}`;
+          if (pairMap[key]) {
+            pairMap[key].myCount++;
           }
         }
       });
@@ -1196,6 +1227,7 @@
       document.getElementById('pairModal').style.display = 'none';
     }
 
+    /* ★ 메인 렌더링 - 전체 관극 회차 수(날짜+회차) 중복 제거 반영 ★ */
     function render() {
       document.querySelectorAll('.seat').forEach(s => {
         s.classList.remove('selected-seat', 'multi-selected-seat');
@@ -1252,17 +1284,25 @@
       listEl.innerHTML = '';
 
       let total = 0;
-      let validTicketCount = 0;
+      const sessionSet = new Set();
+      let unassignedCount = 0;
 
       filteredTickets.forEach(t => {
         if (t.status !== '양도') {
           total += t.price;
-          validTicketCount++;
+          if (t.date && t.date !== '날짜 미지정') {
+            sessionSet.add(t.date); // 날짜+회차(시간) 고유값 집합
+          } else {
+            unassignedCount++;
+          }
         }
       });
 
+      // 동일 회차는 1회차로 카운트
+      const totalSessions = sessionSet.size + unassignedCount;
+
       document.getElementById('totalPrice').innerText = total.toLocaleString();
-      document.getElementById('ticketCount').innerText = validTicketCount;
+      document.getElementById('ticketCount').innerText = totalSessions;
 
       filteredTickets.forEach(t => {
         const li = document.createElement('li');
