@@ -75,7 +75,7 @@
       z-index: 20;
     }
 
-    .schedule-toggle-btn {
+    .schedule-toggle-btn, .result-toggle-btn {
       width: 100%;
       padding: 8px 10px;
       background: rgba(224, 242, 254, 0.9);
@@ -89,6 +89,18 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+
+    .result-toggle-btn {
+      margin-top: 10px;
+      margin-bottom: 0;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+
+    .result-toggle-btn.is-open {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
     }
 
     .schedule-container {
@@ -137,7 +149,6 @@
     .schedule-table tr:hover td { background: #bae6fd !important; }
     .schedule-table tr:nth-child(even) td { background: rgba(241, 245, 249, 0.7); }
 
-    /* 모바일 한 줄 유지를 위한 열 너비 재조정 */
     .col-date { width: 17%; }
     .col-time { width: 12%; }
     .col-miller { width: 24.5%; }
@@ -230,7 +241,14 @@
     .filter-btn { padding: 3px 6px; margin-right: 2px; background: #e2e8f0; border: none; border-radius: 4px; cursor: pointer; font-size: 10px; margin-bottom: 3px; white-space: nowrap; }
     .filter-btn.active { background: #0284c7; color: white; font-weight: bold; }
 
-    .result { margin-top: 10px; padding: 10px; background: rgba(248, 250, 252, 0.9); border: 1px solid #e2e8f0; border-radius: 10px; }
+    .result { 
+      padding: 10px; 
+      background: rgba(248, 250, 252, 0.9); 
+      border: 1px solid #bae6fd; 
+      border-top: none;
+      border-bottom-left-radius: 10px; 
+      border-bottom-right-radius: 10px; 
+    }
     .result h3 { margin: 0 0 4px 0; font-size: 14px; color: #0f172a; }
     .result h4 { margin: 0 0 6px 0; font-size: 12px; color: #334155; }
     ul { list-style: none; padding-left: 0; margin-bottom: 0; }
@@ -540,7 +558,13 @@
       <span id="actorFilterContainer"></span>
     </div>
 
-    <div class="result">
+    <!-- 총관극정산 펼치기/접기 버튼 -->
+    <button class="result-toggle-btn is-open" id="resultToggleBtn" onclick="toggleResult()">
+      <span>총 관극 정산 및 목록</span>
+      <span id="resultToggleIcon">▲ 접기</span>
+    </button>
+
+    <div class="result" id="resultBox">
       <h3>총 관극 정산: <span id="totalPrice">0</span>원</h3>
       <h4>관극 목록 (<span id="ticketCount">0</span>회차)</h4>
       <ul id="ticketList"></ul>
@@ -790,6 +814,22 @@
         icon.innerText = '▲ 접기';
       } else {
         box.style.display = 'none';
+        icon.innerText = '▼ 펼치기';
+      }
+    }
+
+    function toggleResult() {
+      const box = document.getElementById('resultBox');
+      const btn = document.getElementById('resultToggleBtn');
+      const icon = document.getElementById('resultToggleIcon');
+      
+      if (box.style.display === 'none') {
+        box.style.display = 'block';
+        btn.classList.add('is-open');
+        icon.innerText = '▲ 접기';
+      } else {
+        box.style.display = 'none';
+        btn.classList.remove('is-open');
         icon.innerText = '▼ 펼치기';
       }
     }
@@ -1368,10 +1408,13 @@
     function exportToImage() {
       const captureArea = document.getElementById('captureArea');
       
+      const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
       html2canvas(captureArea, {
-        scale: 4,
+        scale: 3,
         useCORS: true,
-        allowTaint: true,
+        allowTaint: false,
         backgroundColor: "#ffffff",
         onclone: (clonedDoc) => {
           const seats = clonedDoc.querySelectorAll('.seat');
@@ -1383,11 +1426,36 @@
           });
         }
       }).then(canvas => {
-        const image = canvas.toDataURL("image/png");
-        const link = document.createElement("a");
-        link.href = image;
-        link.download = "뮤지컬청새치.png";
-        link.click();
+        const imageData = canvas.toDataURL("image/png");
+
+        if (isiOS) {
+          const newWindow = window.open("");
+          if (newWindow) {
+            newWindow.document.write(`
+              <html>
+                <head>
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <title>정산판 저장</title>
+                </head>
+                <body style="margin:0; background:#0f172a; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:15px; box-sizing:border-box;">
+                  <p style="color:#ffffff; font-size:14px; font-weight:bold; margin-bottom:12px; text-align:center; word-break:keep-all;">
+                    📸 이미지를 1~2초간 꾹 눌러<br>'사진에 추가'를 눌러 저장하세요.
+                  </p>
+                  <img src="${imageData}" style="max-width:100%; height:auto; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.5);" />
+                </body>
+              </html>
+            `);
+          } else {
+            alert("팝업이 차단되었습니다. Safari 설정에서 '팝업 차단'을 해제해 주세요.");
+          }
+        } else {
+          const link = document.createElement("a");
+          link.href = imageData;
+          link.download = "뮤지컬청새치_정산판.png";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
       }).catch(err => {
         alert("이미지 저장 중 오류가 발생했습니다.");
         console.error(err);
