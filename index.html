@@ -639,23 +639,23 @@
     };
 
     const actorImages = {
-      "김서연": "actor_kim_seoyeon.jpg",
-      "이지연": "actor_lee_jiyeon.jpg",
-      "전민지": "actor_jeon_minji.jpg",
-      "홍나현": "actor_hong_nahyun.jpg",
-      "김경민": "actor_kim_gyeongmin.jpg",
-      "박슬기": "park_seulki.jpg",
-      "이봄소리": "actor_lee_bomsori.jpg"
+      "김서연": "actor_kim_seoyeon.png",
+      "이지연": "actor_lee_jiyeon.png",
+      "전민지": "actor_jeon_minji.png",
+      "홍나현": "actor_hong_nahyun.png",
+      "김경민": "actor_kim_gyeongmin.png",
+      "박슬기": "park_seulki.png",
+      "이봄소리": "actor_lee_bomsori.png"
     };
 
     const actorImagesToggle = {
-      "김서연": "actor_kim_seoyeon_2.jpg",
-      "이지연": "actor_lee_jiyeon_2.jpg",
-      "전민지": "actor_jeon_minji_2.jpg",
-      "홍나현": "actor_hong_nahyun_2.jpg",
-      "김경민": "actor_kim_gyeongmin_2.jpg",
-      "박슬기": "park_seulki_2.jpg",
-      "이봄소리": "actor_lee_bomsori_2.jpg"
+      "김서연": "actor_kim_seoyeon_2.png",
+      "이지연": "actor_lee_jiyeon_2.png",
+      "전민지": "actor_jeon_minji_2.png",
+      "홍나현": "actor_hong_nahyun_2.png",
+      "김경민": "actor_kim_gyeongmin_2.png",
+      "박슬기": "park_seulki_2.png",
+      "이봄소리": "actor_lee_bomsori_2.png"
     };
 
     const actorImageState = {
@@ -734,15 +734,15 @@
       { date: "9/6", day: "일", time: "14:00", miller: "이지연", gregorio: "박슬기", evt: "pola" },
       { date: "9/6", day: "일", time: "18:00", miller: "전민지", gregorio: "김경민", evt: "pola" },
 
-      { date: "9/8", day: "화", time: "20:00", miller: "홍나현", gregorio: "이봄소리", evt: "scall" },
-      { date: "9/9", day: "수", time: "16:00", miller: "이지연", gregorio: "박슬기", evt: "scall" },
-      { date: "9/9", day: "수", time: "20:00", miller: "전민지", gregorio: "이봄소리", evt: "scall" },
-      { date: "9/10", day: "목", time: "20:00", miller: "전민지", gregorio: "김경민", evt: "scall" },
-      { date: "9/11", day: "금", time: "20:00", miller: "홍나현", gregorio: "이봄소리", evt: "scall" },
-      { date: "9/12", day: "토", time: "15:00", miller: "이지연", gregorio: "박슬기", evt: "scall" },
-      { date: "9/12", day: "토", time: "19:00", miller: "전민지", gregorio: "박슬기", evt: "scall" },
-      { date: "9/13", day: "일", time: "14:00", miller: "홍나현", gregorio: "김경민", evt: "scall" },
-      { date: "9/13", day: "일", time: "18:00", miller: "이지연", gregorio: "김경민", evt: "scall" },
+      { date: "9/8", day: "화", time: "20:00", miller: "홍나현", gregorio: "이봄소리", evt: "scall", song: "파도가 부른 사람" },
+      { date: "9/9", day: "수", time: "16:00", miller: "이지연", gregorio: "박슬기", evt: "scall", song: "쿠바의 바다로" },
+      { date: "9/9", day: "수", time: "20:00", miller: "전민지", gregorio: "이봄소리", evt: "scall", song: "네가 뭔데" },
+      { date: "9/10", day: "목", time: "20:00", miller: "전민지", gregorio: "김경민", evt: "scall", song: "파도가 부른 사람" },
+      { date: "9/11", day: "금", time: "20:00", miller: "홍나현", gregorio: "이봄소리", evt: "scall", song: "재회" },
+      { date: "9/12", day: "토", time: "15:00", miller: "이지연", gregorio: "박슬기", evt: "scall", song: "도착" },
+      { date: "9/12", day: "토", time: "19:00", miller: "전민지", gregorio: "박슬기", evt: "scall", song: "재회" },
+      { date: "9/13", day: "일", time: "14:00", miller: "홍나현", gregorio: "김경민", evt: "scall", song: "노트 속 이야기" },
+      { date: "9/13", day: "일", time: "18:00", miller: "이지연", gregorio: "김경민", evt: "scall", song: "마지막 사냥" },
       { date: "9/15", day: "화", time: "20:00", miller: "홍나현", gregorio: "박슬기" },
       { date: "9/16", day: "수", time: "16:00", miller: "이지연", gregorio: "김경민" },
       { date: "9/16", day: "수", time: "20:00", miller: "홍나현", gregorio: "이봄소리" },
@@ -911,12 +911,11 @@
         let evtHtml = '';
         if (item.evt === 'curtaincall') evtHtml = '<span class="event-badge evt-curtaincall">📷커튼콜</span>';
         else if (item.evt === 'double') evtHtml = '<span class="event-badge evt-double">도장더블</span>';
-        else if (item.evt === 'special') evtHtml = `<span class="event-badge evt-special" onclick="event.stopPropagation(); showSongAlert('${item.song}')">📸스콜</span>`;
+        else if (item.evt === 'special' || item.evt === 'scall') evtHtml = `<span class="event-badge evt-special" onclick="event.stopPropagation(); showSongAlert('${item.song}')">📸스콜</span>`;
         else if (item.evt === 'candy') evtHtml = '<span class="event-badge evt-candy">🍬사탕증정</span>';
         else if (item.evt === 'epshot') evtHtml = '<span class="event-badge evt-epshot">에필촬영</span>';
         else if (item.evt === 'epshot_pola') evtHtml = '<span class="event-badge evt-epshot">에필촬영</span><span class="event-badge evt-pola">폴라</span>';
         else if (item.evt === 'pola') evtHtml = '<span class="event-badge evt-pola">폴라</span>';
-        else if (item.evt === 'scall') evtHtml = '<span class="event-badge evt-special">📸스콜</span>';
 
         let infoContent = [evtHtml, epHtml].filter(Boolean).join('');
 
