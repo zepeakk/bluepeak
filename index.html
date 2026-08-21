@@ -519,11 +519,12 @@
           <option value="0.5">KIT 카드 50% 할인권</option>
           <option value="0.5">NEP 2026 50% 할인권</option>
           <option value="0.5">복지 할인 / 50%</option>
+          <option value="custom">직접 입력</option>
         </select>
       </div>
 
       <div class="form-group">
-        <label>최종 결제액 (수수료 2천원 포함)</label>
+        <label>최종 결제액 (수수료 포함)</label>
         <input type="number" id="finalPrice" readonly style="background: rgba(241, 245, 249, 0.8);">
       </div>
 
@@ -999,12 +1000,25 @@
 
     function calculatePrice() {
       const gradeSelect = document.getElementById('seatGrade');
+      const discountSelect = document.getElementById('discount');
+      const finalPriceInput = document.getElementById('finalPrice');
+
+      if (discountSelect.value === 'custom') {
+        finalPriceInput.removeAttribute('readonly');
+        finalPriceInput.style.background = '#ffffff';
+        finalPriceInput.focus();
+        return;
+      }
+
+      finalPriceInput.setAttribute('readonly', 'readonly');
+      finalPriceInput.style.background = 'rgba(241, 245, 249, 0.8)';
+
       const basePrice = Number(gradeSelect.options[gradeSelect.selectedIndex].dataset.price);
-      const discountRate = Number(document.getElementById('discount').value);
+      const discountRate = Number(discountSelect.value);
 
       const bookingFee = 2000;
       const calculated = Math.round(basePrice * discountRate) + bookingFee;
-      document.getElementById('finalPrice').value = calculated;
+      finalPriceInput.value = calculated;
     }
 
     function addTicket() {
