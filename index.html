@@ -188,6 +188,9 @@
     .evt-candy { background: #fef9c3; color: #854d0e; border: 1px solid #fef08a; }
     .evt-epshot { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
     .evt-pola { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+    .evt-luck { background: #fef08a; color: #854d0e; border: 1px solid #fde047; }
+    .evt-sing { background: #fbcfe8; color: #9d174d; border: 1px solid #f9a8d4; }
+    .evt-stagegreet { background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe; }
 
     .selected-schedule td {
       background: #38bdf8 !important;
@@ -747,26 +750,28 @@
       { date: "9/13", day: "일", time: "14:00", miller: "홍나현", gregorio: "김경민", evt: "scall", song: "노트 속 이야기" },
       { date: "9/13", day: "일", time: "18:00", miller: "이지연", gregorio: "김경민", evt: "scall", song: "마지막 사냥" },
 
-      { date: "9/15", day: "화", time: "20:00", miller: "홍나현", gregorio: "박슬기", ep: "ep1" },
-      { date: "9/16", day: "수", time: "16:00", miller: "이지연", gregorio: "김경민", ep: "ep1" },
-      { date: "9/16", day: "수", time: "20:00", miller: "홍나현", gregorio: "이봄소리", ep: "ep1" },
-      { date: "9/17", day: "목", time: "20:00", miller: "전민지", gregorio: "이봄소리", ep: "ep1" },
-      { date: "9/18", day: "금", time: "16:00", miller: "홍나현", gregorio: "김경민", ep: "ep1" },
-      { date: "9/18", day: "금", time: "20:00", miller: "이지연", gregorio: "김경민", ep: "ep1" },
-      { date: "9/19", day: "토", time: "15:00", miller: "전민지", gregorio: "박슬기", ep: "ep1" },
-      { date: "9/19", day: "토", time: "19:00", miller: "전민지", gregorio: "박슬기", ep: "ep1" },
-      { date: "9/20", day: "일", time: "14:00", miller: "이지연", gregorio: "이봄소리", ep: "ep1" },
-      { date: "9/20", day: "일", time: "18:00", miller: "홍나현", gregorio: "김경민", ep: "ep1" },
+      /* 9/15 ~ 9/20 주차 이벤트 */
+      { date: "9/15", day: "화", time: "20:00", miller: "홍나현", gregorio: "박슬기", ep: "ep1", evt: "sing" },
+      { date: "9/16", day: "수", time: "16:00", miller: "이지연", gregorio: "김경민", ep: "ep1", evt: "luck" },
+      { date: "9/16", day: "수", time: "20:00", miller: "홍나현", gregorio: "이봄소리", ep: "ep1", evt: "luck" },
+      { date: "9/17", day: "목", time: "20:00", miller: "전민지", gregorio: "이봄소리", ep: "ep1", evt: "sing" },
+      { date: "9/18", day: "금", time: "16:00", miller: "홍나현", gregorio: "김경민", ep: "ep1", evt: "luck" },
+      { date: "9/18", day: "금", time: "20:00", miller: "이지연", gregorio: "김경민", ep: "ep1", evt: "sing" },
+      { date: "9/19", day: "토", time: "15:00", miller: "전민지", gregorio: "박슬기", ep: "ep1", evt: "luck" },
+      { date: "9/19", day: "토", time: "19:00", miller: "전민지", gregorio: "박슬기", ep: "ep1", evt: "sing" },
+      { date: "9/20", day: "일", time: "14:00", miller: "이지연", gregorio: "이봄소리", ep: "ep1", evt: "sing" },
+      { date: "9/20", day: "일", time: "18:00", miller: "홍나현", gregorio: "김경민", ep: "ep1", evt: "sing" },
 
-      { date: "9/22", day: "화", time: "20:00", miller: "이지연", gregorio: "김경민", ep: "ep3" },
-      { date: "9/23", day: "수", time: "16:00", miller: "전민지", gregorio: "김경민", ep: "ep3" },
-      { date: "9/23", day: "수", time: "20:00", miller: "전민지", gregorio: "박슬기", ep: "ep3" },
-      { date: "9/24", day: "목", time: "14:00", miller: "홍나현", gregorio: "이봄소리", ep: "ep3" },
-      { date: "9/24", day: "목", time: "18:00", miller: "이지연", gregorio: "박슬기", ep: "ep3" },
-      { date: "9/26", day: "토", time: "14:00", miller: "이지연", gregorio: "이봄소리", ep: "ep3" },
-      { date: "9/26", day: "토", time: "18:00", miller: "전민지", gregorio: "김경민", millerNote: "막공", gregorioNote: "막공", ep: "ep3" },
-      { date: "9/27", day: "일", time: "14:00", miller: "이지연", gregorio: "박슬기", millerNote: "막공", gregorioNote: "막공", ep: "ep3" },
-      { date: "9/27", day: "일", time: "18:00", miller: "홍나현", gregorio: "이봄소리", millerNote: "막공", gregorioNote: "막공", ep: "ep3" }
+      /* 9/22 ~ 9/27 주차 이벤트 */
+      { date: "9/22", day: "화", time: "20:00", miller: "이지연", gregorio: "김경민", ep: "ep3", evt: "epshot" },
+      { date: "9/23", day: "수", time: "16:00", miller: "전민지", gregorio: "김경민", ep: "ep3", evt: "epshot" },
+      { date: "9/23", day: "수", time: "20:00", miller: "전민지", gregorio: "박슬기", ep: "ep3", evt: "epshot" },
+      { date: "9/24", day: "목", time: "14:00", miller: "홍나현", gregorio: "이봄소리", ep: "ep3", evt: "epshot" },
+      { date: "9/24", day: "목", time: "18:00", miller: "이지연", gregorio: "박슬기", ep: "ep3", evt: "epshot" },
+      { date: "9/26", day: "토", time: "14:00", miller: "이지연", gregorio: "이봄소리", ep: "ep3", evt: "epshot" },
+      { date: "9/26", day: "토", time: "18:00", miller: "전민지", gregorio: "김경민", millerNote: "막공", gregorioNote: "막공", ep: "ep3", evt: "stagegreet" },
+      { date: "9/27", day: "일", time: "14:00", miller: "이지연", gregorio: "박슬기", millerNote: "막공", gregorioNote: "막공", ep: "ep3", evt: "stagegreet" },
+      { date: "9/27", day: "일", time: "18:00", miller: "홍나현", gregorio: "이봄소리", millerNote: "막공", gregorioNote: "막공", ep: "ep3", evt: "stagegreet" }
     ];
 
     const rowConfig = [
@@ -917,9 +922,12 @@
         else if (item.evt === 'double') evtHtml = '<span class="event-badge evt-double">도장더블</span>';
         else if (item.evt === 'special' || item.evt === 'scall') evtHtml = `<span class="event-badge evt-special" onclick="event.stopPropagation(); showSongAlert('${item.song}')">📸스콜</span>`;
         else if (item.evt === 'candy') evtHtml = '<span class="event-badge evt-candy">🍬사탕증정</span>';
-        else if (item.evt === 'epshot') evtHtml = '<span class="event-badge evt-epshot">에필촬영</span>';
-        else if (item.evt === 'epshot_pola') evtHtml = '<span class="event-badge evt-epshot">에필촬영</span><span class="event-badge evt-pola">폴라</span>';
+        else if (item.evt === 'epshot') evtHtml = '<span class="event-badge evt-epshot">에필 촬영</span>';
+        else if (item.evt === 'epshot_pola') evtHtml = '<span class="event-badge evt-epshot">에필 촬영</span><span class="event-badge evt-pola">폴라</span>';
         else if (item.evt === 'pola') evtHtml = '<span class="event-badge evt-pola">폴라</span>';
+        else if (item.evt === 'luck') evtHtml = '<span class="event-badge evt-luck">럭드</span>';
+        else if (item.evt === 'sing') evtHtml = '<span class="event-badge evt-sing">싱어롱</span>';
+        else if (item.evt === 'stagegreet') evtHtml = '<span class="event-badge evt-stagegreet">무대인사</span>';
 
         let infoContent = [evtHtml, epHtml].filter(Boolean).join('');
 
@@ -1277,8 +1285,11 @@
           if (s.evt === 'double') tags.push('도장더블');
           if (s.evt === 'special' || s.evt === 'scall') tags.push('스콜');
           if (s.evt === 'candy') tags.push('사탕증정');
-          if (s.evt === 'epshot' || s.evt === 'epshot_pola') tags.push('에필촬영');
+          if (s.evt === 'epshot' || s.evt === 'epshot_pola') tags.push('에필 촬영');
           if (s.evt === 'pola' || s.evt === 'epshot_pola') tags.push('폴라');
+          if (s.evt === 'luck') tags.push('럭드');
+          if (s.evt === 'sing') tags.push('싱어롱');
+          if (s.evt === 'stagegreet') tags.push('무대인사');
 
           itemDiv.innerHTML = `
             <span>${fullDateStr}</span>
