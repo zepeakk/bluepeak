@@ -456,6 +456,155 @@
     .modal-schedule-item.past { color: #94a3b8; }
     .modal-schedule-item.future { color: #0f172a; font-weight: bold; }
     .modal-schedule-item .item-tags { font-size: 9px; }
+
+    /* --------------------------------------------------
+       [추가] 이벤트 상세 팝업 (싱어롱 / 럭키드로우) 스타일
+    -------------------------------------------------- */
+    .event-modal-content {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+      background: linear-gradient(to bottom, #7bb0cc 0%, #a2c6d8 20%, #d8e5ed 40%, #0d2744 100%);
+      border-radius: 8px;
+      padding: 25px 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      color: #1a2a3a;
+      font-family: 'Georgia', 'Noto Serif KR', serif;
+      box-sizing: border-box;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .event-modal-close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .event-popup-title {
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      color: #2b5270;
+      margin-bottom: 5px;
+    }
+
+    .event-popup-subtitle {
+      text-align: center;
+      font-size: 12px;
+      color: #335577;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .event-popup-period {
+      text-align: center;
+      font-size: 11.5px;
+      font-weight: bold;
+      color: #1a3550;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .event-info-box {
+      background: rgba(255, 255, 255, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      padding: 12px 8px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    .event-box-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      color: #2b5270;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+
+    .gift-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 10px;
+      font-size: 11.5px;
+      color: #222;
+    }
+
+    .gift-item {
+      display: flex;
+      align-items: center;
+    }
+
+    .gift-item::before {
+      content: "•";
+      margin-right: 4px;
+      color: #2b5270;
+    }
+
+    .singalong-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10.5px;
+      text-align: center;
+    }
+
+    .singalong-table th {
+      border-bottom: 1px solid #7799bb;
+      padding: 4px 2px;
+      color: #1a3550;
+    }
+
+    .singalong-table td {
+      padding: 5px 2px;
+      color: #222;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .event-notice-list {
+      font-size: 10px;
+      color: #aaccdd;
+      line-height: 1.45;
+      padding-left: 0;
+      list-style: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      padding-top: 8px;
+      margin-bottom: 12px;
+    }
+
+    .event-notice-list li {
+      position: relative;
+      padding-left: 8px;
+      margin-bottom: 2px;
+    }
+
+    .event-notice-list li::before {
+      content: "-";
+      position: absolute;
+      left: 0;
+    }
+
+    .event-logo-title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #4a90e2;
+      letter-spacing: 3px;
+      text-shadow: 0 0 8px rgba(255,255,255,0.2);
+    }
+
+    .event-logo-sub {
+      font-size: 8.5px;
+      letter-spacing: 2px;
+      color: #88aacc;
+      display: block;
+      margin-bottom: -3px;
+    }
   </style>
 </head>
 <body>
@@ -623,6 +772,86 @@
         <button class="modal-close-btn" onclick="closePairModal()">✕</button>
       </div>
       <div class="modal-body" id="modalPairBody"></div>
+    </div>
+  </div>
+
+  <!-- --------------------------------------------------
+       [추가] 이벤트 상세 팝업 모달 (싱어롱 / 럭키드로우)
+  -------------------------------------------------- -->
+  <div class="modal-overlay" id="eventDetailModal" onclick="closeEventModalOnOverlay(event)">
+    <div class="event-modal-content">
+      <button class="event-modal-close" onclick="closeEventModal()">&times;</button>
+      
+      <!-- 싱어롱 모달 내용 -->
+      <div id="singalongPopup" style="display: none;">
+        <div class="event-popup-subtitle">"그건 무슨 노래야?"<br>"쿠바의 어부들이 바다로 나갈 때 부르는 노래"</div>
+        <div class="event-popup-title">싱어롱 데이</div>
+        <div class="event-popup-period">| 진행기간 | 9/15(화), 9/17(목), 9/18(금),<br>9/19(토) 19시, 9/20(일) 14/18시 공연</div>
+
+        <div class="event-info-box">
+          <table class="singalong-table">
+            <thead>
+              <tr>
+                <th>날짜</th>
+                <th>요일</th>
+                <th>회차</th>
+                <th>밀러/루소</th>
+                <th>그레고리오/에벌린</th>
+                <th>싱어롱 넘버</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>9월 15일</td><td>화</td><td>20:00</td><td>홍나현</td><td>박슬기</td><td>그곳이 여기야</td></tr>
+              <tr><td>9월 17일</td><td>목</td><td>20:00</td><td>전민지</td><td>이봄소리</td><td>재회</td></tr>
+              <tr><td>9월 18일</td><td>금</td><td>20:00</td><td>이지연</td><td>김경민</td><td>네가 뭔데</td></tr>
+              <tr><td>9월 19일</td><td>토</td><td>19:00</td><td>전민지</td><td>박슬기</td><td>네가 뭔데</td></tr>
+              <tr><td>9월 20일</td><td>일</td><td>14:00</td><td>이지연</td><td>이봄소리</td><td>파도가 부른 사람</td></tr>
+              <tr><td>9월 20일</td><td>일</td><td>18:00</td><td>홍나현</td><td>김경민</td><td>쿠바의 바다로</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ul class="event-notice-list">
+          <li>본 공연의 에필로그 장면까지 모두 종료된 후 잠시 무대 정리 후에 싱어롱 무대가 진행됩니다.</li>
+          <li>티켓 부스에서 진행되는 넘버의 가사지를 증정합니다.</li>
+          <li>싱어롱 무대가 진행되는 동안 사진 및 영상 촬영은 불가합니다.</li>
+          <li>중도 퇴장 시 재입장은 불가합니다.</li>
+        </ul>
+      </div>
+
+      <!-- 럭키드로우 모달 내용 -->
+      <div id="luckyPopup" style="display: none;">
+        <div class="event-popup-title" style="margin-top: 10px;">럭키드로우 데이</div>
+        <div class="event-popup-subtitle">공연 종료 후, 무대 위에서 배우와 함께하는<br>럭키드로우 이벤트가 진행됩니다!</div>
+        <div class="event-popup-period">| 진행기간 | 9/16(수) 16/20시, 9/18(금) 16시, 9/19(토) 15시 공연</div>
+
+        <div class="event-info-box">
+          <div class="event-box-title">선물 리스트</div>
+          <div class="gift-grid">
+            <div class="gift-item">사인 캐스팅보드</div>
+            <div class="gift-item">프로필 폴라로이드 사진</div>
+            <div class="gift-item">전배우 사인 프로그램북</div>
+            <div class="gift-item">배우 친필 대사 티켓</div>
+            <div class="gift-item">&lt;청새치&gt; 초대권</div>
+            <div class="gift-item">배우 친필 청새치 그림 원본</div>
+            <div class="gift-item">사인 폴라로이드 사진</div>
+            <div class="gift-item">초밥 기프티콘</div>
+          </div>
+        </div>
+
+        <ul class="event-notice-list">
+          <li>본 공연의 에필로그 장면까지 모두 종료된 후 잠시 무대 정리 후에 럭키드로우 이벤트가 진행됩니다.</li>
+          <li>당일 캐스트 배우가 무대에서 직접 당첨자를 추첨하며, 준비된 한정 수량에 한해 추첨을 진행합니다.</li>
+          <li>사인 캐스팅 보드, 폴라로이드 사진, 배우 친필 대사 티켓, 청새치 그림 원본은 당일 캐스트 배우로 구성되어 있습니다.</li>
+          <li>선물에 당첨되신 분들은 공연 종료 후 MD부스에서 수령 가능하며, 사인 캐스팅 보드의 경우 교환권으로 증정 드린 후, 각 배우의 막공 종료 후 수령 가능합니다.</li>
+          <li>럭키드로우 이벤트가 진행되는 동안 사진 및 영상 촬영은 불가하며, 중도 퇴장 시 재입장은 불가합니다.</li>
+        </ul>
+      </div>
+
+      <div class="event-logo-title">
+        <span class="event-logo-sub">MUSICAL</span>
+        청새치
+      </div>
     </div>
   </div>
 
@@ -845,6 +1074,35 @@
       alert(`🎵 넘버: [${songName}]`);
     }
 
+    /* --------------------------------------------------
+       [추가] 이벤트 배지 클릭 시 모달 팝업 열기
+    -------------------------------------------------- */
+    function openEventDetailModal(type) {
+      const modal = document.getElementById('eventDetailModal');
+      const singalong = document.getElementById('singalongPopup');
+      const lucky = document.getElementById('luckyPopup');
+
+      if (type === 'singalong') {
+        singalong.style.display = 'block';
+        lucky.style.display = 'none';
+      } else if (type === 'lucky') {
+        singalong.style.display = 'none';
+        lucky.style.display = 'block';
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function closeEventModal() {
+      document.getElementById('eventDetailModal').style.display = 'none';
+    }
+
+    function closeEventModalOnOverlay(event) {
+      if (event.target.classList.contains('modal-overlay')) {
+        closeEventModal();
+      }
+    }
+
     function parseDateToTimestamp(dateStr) {
       if (!dateStr || dateStr === '날짜 미지정') return 0;
       const match = dateStr.match(/(\d+)\/(\d+)\s*\([^)]+\)\s*(\d+):(\d+)/);
@@ -923,8 +1181,8 @@
         else if (item.evt === 'epshot') evtHtml = '<span class="event-badge evt-epshot">에필 촬영</span>';
         else if (item.evt === 'epshot_pola') evtHtml = '<span class="event-badge evt-epshot">에필 촬영</span><span class="event-badge evt-pola">폴라</span>';
         else if (item.evt === 'pola') evtHtml = '<span class="event-badge evt-pola">폴라</span>';
-        else if (item.evt === 'luck') evtHtml = '<span class="event-badge evt-luck">럭드</span>';
-        else if (item.evt === 'sing') evtHtml = '<span class="event-badge evt-sing">싱어롱</span>';
+        else if (item.evt === 'luck') evtHtml = `<span class="event-badge evt-luck" onclick="event.stopPropagation(); openEventDetailModal('lucky')">럭드</span>`;
+        else if (item.evt === 'sing') evtHtml = `<span class="event-badge evt-sing" onclick="event.stopPropagation(); openEventDetailModal('singalong')">싱어롱</span>`;
         else if (item.evt === 'stagegreet') evtHtml = '<span class="event-badge evt-stagegreet">무대인사</span>';
 
         let infoContent = [evtHtml, epHtml].filter(Boolean).join('');
